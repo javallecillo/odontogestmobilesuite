@@ -1,0 +1,13 @@
+Options -Indexes
+RewriteEngine On
+
+# Sin RewriteBase — Apache usa la carpeta del .htaccess como contexto.
+# Funciona igual si está en VirtualHost propio (puerto 9015)
+# o dentro de htdocs/cualquier-subcarpeta/odontogest_web/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# Bloquear acceso a carpetas sensibles
+RewriteRule ^(Config|Models|Controllers|Entity)/ - [F,L]

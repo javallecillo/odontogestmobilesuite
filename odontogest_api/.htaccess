@@ -1,0 +1,15 @@
+# ── OdontoGest API — Apache config ───────────────────────────
+# Requerido para que PHP reciba el header Authorization: Bearer <token>
+
+RewriteEngine On
+
+# Pasar Authorization header a PHP (XAMPP lo bloquea por defecto)
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+# Redirigir todo a index.php (si en el futuro usas router)
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteRule ^(.*)$ index.php [QSA,L]
+
+# No mostrar listado de archivos
+Options -Indexes
