@@ -31,3 +31,4 @@ try {
 	echo '<pre>' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . '</pre>';
 	echo '</body></html>';
 }
+
