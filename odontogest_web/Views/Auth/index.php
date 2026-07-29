@@ -273,7 +273,7 @@
         <div class="brand-block">
             <div class="brand-name">OdontoGest</div>
             <div class="brand-sub">Sistema de Gestión Odontológica</div>
-            <div class="brand-clinic">Clínica Dental Paz &mdash; Honduras</div>
+            <div class="brand-clinic">Clínica Dental Ortonova &mdash; Honduras</div>
 
             <ul class="feature-list">
                 <li><span class="dot"></span> Gestión de citas y agenda</li>
@@ -320,7 +320,7 @@
         </div>
 
         <div class="login-footer">
-            &copy; 2025 OdontoGest &middot; Clínica Dental Paz
+            &copy; 2025 OdontoGest &middot; Clínica Dental Ortonova
         </div>
     </div>
 
