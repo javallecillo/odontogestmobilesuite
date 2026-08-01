@@ -36,34 +36,36 @@ try {
     $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
     // Total
-    $cntStmt = $db->prepare("
-        SELECT COUNT(*) FROM pacientes p
-        LEFT JOIN expedientes e ON e.id_paciente = p.id_paciente
-        $whereSQL
-    ");
+        @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | pacientes/listar.php cnt execute params: " . json_encode($params) . " | where: " . $whereSQL . "\n", FILE_APPEND);
+        $cntStmt = $db->prepare("
+            SELECT COUNT(*) FROM pacientes p
+            LEFT JOIN expedientes e ON e.id_paciente = p.id_paciente
+            $whereSQL
+        ");
     $cntStmt->execute($params);
     $total = (int)$cntStmt->fetchColumn();
 
     // Datos
-    $stmt = $db->prepare("
-        SELECT
-            p.id_paciente,
-            CONCAT(p.nombre, ' ', p.apellidos)  AS nombre_completo,
-            p.dni,
-            p.fecha_nacimiento,
-            p.telefono,
-            p.correo,
-            p.estado,
-            p.estado_civil,
-            p.sexo,
-            e.id_expediente,
-            CONCAT('EXP-', LPAD(e.id_expediente, 5, '0')) AS numero_expediente
-        FROM pacientes p
-        LEFT JOIN expedientes e ON e.id_paciente = p.id_paciente
-        $whereSQL
-        ORDER BY p.nombre, p.apellidos
-        LIMIT $limit OFFSET $offset
-    ");
+        @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | pacientes/listar.php stmt execute params: " . json_encode($params) . " | where: " . $whereSQL . "\n", FILE_APPEND);
+        $stmt = $db->prepare("
+            SELECT
+                p.id_paciente,
+                CONCAT(p.nombre, ' ', p.apellidos)  AS nombre_completo,
+                p.dni,
+                p.fecha_nacimiento,
+                p.telefono,
+                p.correo,
+                p.estado,
+                p.estado_civil,
+                p.sexo,
+                e.id_expediente,
+                CONCAT('EXP-', LPAD(e.id_expediente, 5, '0')) AS numero_expediente
+            FROM pacientes p
+            LEFT JOIN expedientes e ON e.id_paciente = p.id_paciente
+            $whereSQL
+            ORDER BY p.nombre, p.apellidos
+            LIMIT $limit OFFSET $offset
+        ");
     $stmt->execute($params);
 
     ok([

@@ -71,6 +71,7 @@ try {
     ";
 
     $stmt = $db->prepare($sql);
+    @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | agenda/listar.php execute params: " . json_encode($params) . " | sql: " . $sql . "\n", FILE_APPEND);
     $stmt->execute($params);
     $citas = $stmt->fetchAll();
 

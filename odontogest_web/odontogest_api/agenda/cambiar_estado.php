@@ -33,6 +33,7 @@ try {
     }
 
     $sql = 'UPDATE citas SET ' . implode(', ', $sets) . ' WHERE id_cita = :id';
+    @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | agenda/cambiar_estado.php execute params: " . json_encode($params) . " | sql: " . $sql . "\n", FILE_APPEND);
     $db->prepare($sql)->execute($params);
 
     ok(['mensaje' => 'Estado actualizado correctamente']);

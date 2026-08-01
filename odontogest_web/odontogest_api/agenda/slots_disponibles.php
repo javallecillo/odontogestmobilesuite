@@ -37,6 +37,7 @@ try {
           AND  DATE(fecha_cita) = :f
           AND  estado NOT IN ('cancelada', 'no_asistio')
     ");
+    @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | agenda/slots_disponibles.php execute params: " . json_encode([':od' => $idOd, ':f' => $fecha]) . "\n", FILE_APPEND);
     $st->execute([':od' => $idOd, ':f' => $fecha]);
     $ocupadas = array_column($st->fetchAll(), 'hora');
 
