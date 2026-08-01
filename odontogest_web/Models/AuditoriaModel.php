@@ -68,8 +68,9 @@ class AuditoriaModel {
         $params = [];
 
         if ($usuario !== '') {
-            $where[]           = '(u.usuario LIKE :usr OR u.nombre_completo LIKE :usr)';
-            $params[':usr']    = '%' . $usuario . '%';
+            $where[]           = '(u.usuario LIKE :usr1 OR u.nombre_completo LIKE :usr2)';
+            $params[':usr1']   = '%' . $usuario . '%';
+            $params[':usr2']   = '%' . $usuario . '%';
         }
         if ($modulo !== '') {
             $where[]           = 'a.modulo = :mod';
@@ -113,11 +114,9 @@ class AuditoriaModel {
              JOIN roles    r ON r.id_rol     = u.id_rol
              WHERE $filtro
              ORDER BY a.fecha DESC
-             LIMIT :lim OFFSET :off"
+             LIMIT {$perPage} OFFSET {$offset}"
         );
         foreach ($params as $k => $v) $sData2->bindValue($k, $v);
-        $sData2->bindValue(':lim', $perPage, PDO::PARAM_INT);
-        $sData2->bindValue(':off', $offset,  PDO::PARAM_INT);
         $sData2->execute();
         $rows = $sData2->fetchAll(PDO::FETCH_ASSOC);
 

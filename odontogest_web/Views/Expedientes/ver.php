@@ -215,7 +215,13 @@ $edad = $paciente['fecha_nacimiento'] ? (int)date_diff(date_create($paciente['fe
 <div id="modalPieza" style="display:none;position:fixed;inset:0;z-index:1060;align-items:center;justify-content:center;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);" onclick="document.getElementById('modalPieza').style.display='none'"></div>
     <div style="position:relative;background:var(--card-bg);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:420px;margin:16px;">
-        <div style="padding:16px 20px;border-bottom:1px solid var(--card-border);font-weight:700;color:var(--body-text);">Registrar condición — Pieza <span id="numPieza"></span></div>
+        <div class="og-modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="og-modal-icon"><i class="fas fa-tooth"></i></div>
+                <h5 style="margin:0;">Pieza <span id="numPieza"></span></h5>
+            </div>
+            <button class="og-modal-close" onclick="document.getElementById('modalPieza').style.display='none'"><i class="fas fa-times"></i></button>
+        </div>
         <form method="POST" action="<?= APP_URL ?>expedientes/guardarOdontograma">
             <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
             <input type="hidden" name="id_paciente" value="<?= $paciente['id_paciente'] ?>">

@@ -2,7 +2,7 @@ class AppAssets {
   AppAssets._();
 
   // Logo principal
-  static const String logo              = 'assets/images/logo_ortonova.png';
+  static const String logo              = 'assets/images/Logo.png';
   static const String logoPlaceholder   = 'assets/images/logo_placeholder.png';
 
   // Imágenes por defecto cuando no hay foto/imagen cargada

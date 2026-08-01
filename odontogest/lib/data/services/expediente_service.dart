@@ -186,10 +186,11 @@ class ExpedienteService {
   static const _timeout = Duration(seconds: 10);
 
   // Listar todos los pacientes activos (para carga inicial)
+  // limit=500 cubre clínicas medianas; para bases muy grandes usar búsqueda paginada
   static Future<List<BusquedaPaciente>> listarTodos() async {
     try {
       final res = await http
-          .get(Uri.parse('$_kBase/pacientes/listar.php?estado=activo&limit=100'),
+          .get(Uri.parse('$_kBase/pacientes/listar.php?estado=activo&limit=500'),
               headers: _h)
           .timeout(_timeout);
       if (res.statusCode == 200) {

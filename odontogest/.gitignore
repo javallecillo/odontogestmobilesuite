@@ -57,3 +57,8 @@ pubspec.lock
 
 # Config local — cada dev edita su propia copia
 lib/core/app_config.dart
+
+# Release signing (NUNCA subir al repo)
+android/key.properties
+android/*.jks
+android/*.keystore

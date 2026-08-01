@@ -27,8 +27,12 @@
             <td><?= $s['duracion_min'] ?> min</td>
             <td><span class="badge badge-<?= $s['estado'] ?>"><?= ucfirst($s['estado']) ?></span></td>
             <td><div style="display:flex;gap:6px;">
-                <button class="btn-og-icon" onclick="editarServicio(<?= htmlspecialchars(json_encode($s)) ?>)"><i class="fas fa-edit"></i></button>
-                <button class="btn-og-icon btn-danger-icon" onclick="eliminarServicio(<?= $s['id_servicio'] ?>)"><i class="fas fa-trash"></i></button>
+                <button class="btn-og-icon" title="Editar" onclick="editarServicio(<?= htmlspecialchars(json_encode($s)) ?>)"><i class="fas fa-edit"></i></button>
+                <?php if($s['estado']==='inactivo'): ?>
+                <button class="btn-og-icon" title="Activar" style="color:#16A34A;border-color:#BBF7D0;" onclick="activarServicio(<?= $s['id_servicio'] ?>)"><i class="fas fa-toggle-on"></i></button>
+                <?php else: ?>
+                <button class="btn-og-icon btn-danger-icon" title="Desactivar" onclick="eliminarServicio(<?= $s['id_servicio'] ?>)"><i class="fas fa-trash"></i></button>
+                <?php endif; ?>
             </div></td>
         </tr>
         <?php endforeach; endif; ?>
@@ -41,9 +45,12 @@
 <div id="modalServicio" style="display:none;position:fixed;inset:0;z-index:1060;align-items:center;justify-content:center;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);" onclick="document.getElementById('modalServicio').style.display='none'"></div>
     <div style="position:relative;background:var(--card-bg);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:500px;margin:16px;">
-        <div style="padding:16px 22px;border-bottom:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;">
-            <h5 style="margin:0;font-size:15px;font-weight:700;color:var(--body-text);"><span id="modalSrvTitulo">Nuevo Servicio</span></h5>
-            <button onclick="document.getElementById('modalServicio').style.display='none'" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:16px;"><i class="fas fa-times"></i></button>
+        <div class="og-modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="og-modal-icon"><i class="fas fa-tooth"></i></div>
+                <h5 style="margin:0;"><span id="modalSrvTitulo">Nuevo Servicio</span></h5>
+            </div>
+            <button class="og-modal-close" onclick="document.getElementById('modalServicio').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
         <form id="formServicio" method="POST" action="<?= APP_URL ?>servicios/crear">
             <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
@@ -67,4 +74,5 @@
 <script>
 function editarServicio(s){document.getElementById('modalSrvTitulo').textContent='Editar Servicio';document.getElementById('formServicio').action='<?= APP_URL ?>servicios/actualizar';document.getElementById('fs_id').value=s.id_servicio;document.getElementById('fs_nom').value=s.nombre;document.getElementById('fs_precio').value=s.precio_base;document.getElementById('fs_isv').value=s.tasa_impuesto;document.getElementById('fs_dur').value=s.duracion_min;document.getElementById('fs_est').value=s.estado;document.getElementById('fs_desc').value=s.descripcion||'';document.getElementById('modalServicio').style.display='flex';}
 function eliminarServicio(id){Swal.fire({title:'¿Desactivar servicio?',icon:'warning',showCancelButton:true,confirmButtonColor:'#DC2626',confirmButtonText:'Desactivar',cancelButtonText:'Cancelar'}).then(r=>{if(!r.isConfirmed)return;const fd=new FormData();fd.append('csrf_token','<?= $csrf ?>');fd.append('id_servicio',id);fetch('<?= APP_URL ?>servicios/eliminar',{method:'POST',body:fd}).then(()=>location.reload());});}
+function activarServicio(id){const fd=new FormData();fd.append('csrf_token','<?= $csrf ?>');fd.append('id_servicio',id);fd.append('estado','activo');fetch('<?= APP_URL ?>servicios/toggleEstado',{method:'POST',body:fd}).then(()=>location.reload());}
 </script>

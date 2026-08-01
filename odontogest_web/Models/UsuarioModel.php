@@ -48,8 +48,10 @@ class UsuarioModel {
         $params = [];
 
         if ($q !== '') {
-            $where[]           = '(u.nombre_completo LIKE :q OR u.usuario LIKE :q OR u.correo LIKE :q)';
-            $params[':q']      = '%' . $q . '%';
+            $where[]           = '(u.nombre_completo LIKE :q1 OR u.usuario LIKE :q2 OR u.correo LIKE :q3)';
+            $params[':q1']     = '%' . $q . '%';
+            $params[':q2']     = '%' . $q . '%';
+            $params[':q3']     = '%' . $q . '%';
         }
         if ($estado !== '') {
             $where[]           = 'u.estado = :estado';
@@ -74,11 +76,9 @@ class UsuarioModel {
              JOIN roles r ON r.id_rol = u.id_rol
              WHERE $filtro
              ORDER BY u.id_usuario DESC
-             LIMIT :limit OFFSET :offset"
+             LIMIT {$perPage} OFFSET {$offset}"
         );
         foreach ($params as $k => $v) $sData->bindValue($k, $v);
-        $sData->bindValue(':limit',  $perPage, PDO::PARAM_INT);
-        $sData->bindValue(':offset', $offset,  PDO::PARAM_INT);
         $sData->execute();
         $rows = $sData->fetchAll(PDO::FETCH_ASSOC);
 
@@ -133,8 +133,8 @@ class UsuarioModel {
         return $s->execute([
             ':id_rol'  => $d['id_rol'],
             ':nombre'  => trim($d['nombre_completo']),
-            ':correo'  => trim($d['correo'] ?? ''),
-            ':tel'     => trim($d['telefono'] ?? ''),
+            ':correo'  => (trim($d['correo']   ?? '') !== '') ? trim($d['correo'])   : null,
+            ':tel'     => (trim($d['telefono'] ?? '') !== '') ? trim($d['telefono']) : null,
             ':estado'  => $d['estado'] ?? 'activo',
             ':id'      => $id,
         ]);

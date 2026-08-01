@@ -4,9 +4,9 @@
 
 define('DB_HOST', '54.87.216.191');
 define('DB_NAME', 'odonto_gest');
-define('DB_USER', 'jval02');
-define('DB_PASS', 'J0rg34r7ur0_v_3');
-define('DB_PORT', 3306);
+define('DB_USER', 'jval02');       // XAMPP por defecto tiene usuario root
+define('DB_PASS', 'J0rg34r7ur0_v_3');       // XAMPP por defecto no tiene contraseña
+define('DB_PORT', '3306');
 
 function getDB(): PDO {
     static $pdo = null;

@@ -80,23 +80,27 @@
 <!-- ── Modal Nueva Factura ──────────────────────────────────────── -->
 <div id="modalFactura" style="display:none;position:fixed;inset:0;z-index:1050;align-items:center;justify-content:center;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);" onclick="document.getElementById('modalFactura').style.display='none'"></div>
-    <div style="position:relative;background:var(--card-bg);border-radius:16px;padding:28px 32px;width:min(640px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-            <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--body-text);">Nueva Factura</h3>
-            <button onclick="document.getElementById('modalFactura').style.display='none'" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:18px;"><i class="fas fa-times"></i></button>
+    <div style="position:relative;background:var(--card-bg);border-radius:16px;overflow:hidden;width:min(640px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+        <div class="og-modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="og-modal-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <h5 style="margin:0;">Nueva Factura</h5>
+            </div>
+            <button class="og-modal-close" onclick="document.getElementById('modalFactura').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
-        <form id="formFactura" method="POST" action="<?= APP_URL ?>facturacion/crear" onsubmit="prepararFactura()">
+        <form id="formFactura" method="POST" action="<?= APP_URL ?>facturacion/crear" onsubmit="prepararFactura(event)">
             <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
             <input type="hidden" name="subtotal" id="fac_sub">
             <input type="hidden" name="isv"      id="fac_isv">
             <input type="hidden" name="total"    id="fac_tot">
             <input type="hidden" name="items"    id="fac_items">
+            <div style="padding:20px 28px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="grid-column:span 2;">
+                <div style="grid-column:span 2;position:relative;">
                     <label class="form-label">Paciente *</label>
                     <input type="text" id="fac_buscar_pac" class="form-control" placeholder="Escriba el nombre del paciente…" oninput="buscarPacFac(this.value)" autocomplete="off">
-                    <input type="hidden" name="id_paciente" id="fac_pac_id" required>
-                    <div id="fac_pac_res" style="border:1px solid #DDE4EF;border-radius:8px;background:var(--card-bg);max-height:160px;overflow-y:auto;display:none;position:absolute;z-index:10;width:100%;"></div>
+                    <input type="hidden" name="id_paciente" id="fac_pac_id">
+                    <div id="fac_pac_res" style="border:1px solid #DDE4EF;border-radius:8px;background:var(--card-bg);max-height:160px;overflow-y:auto;display:none;position:absolute;z-index:20;width:100%;box-shadow:0 4px 12px rgba(0,0,0,.12);top:calc(100% + 2px);"></div>
                 </div>
                 <div><label class="form-label">Método de Pago</label>
                     <select name="metodo_pago" class="form-select">
@@ -126,7 +130,7 @@
             </div>
 
             <!-- Totales -->
-            <div style="margin-top:16px;padding:14px;background:var(--sidebar-bg);border-radius:10px;text-align:right;font-size:14px;">
+            <div style="margin-top:16px;padding:14px;background:var(--body-bg);border:1px solid var(--card-border);border-radius:10px;text-align:right;font-size:14px;color:var(--body-text);">
                 <div>Subtotal: <strong id="show_sub">L. 0.00</strong></div>
                 <div>ISV: <strong id="show_isv">L. 0.00</strong></div>
                 <div style="font-size:17px;margin-top:6px;color:#1A56AB;">Total: <strong id="show_tot">L. 0.00</strong></div>
@@ -136,6 +140,7 @@
                 <button type="button" class="btn-og-secondary" onclick="document.getElementById('modalFactura').style.display='none'">Cancelar</button>
                 <button type="submit" class="btn-og-primary"><i class="fas fa-save me-1"></i>Emitir Factura</button>
             </div>
+            </div><!-- /padding wrapper -->
         </form>
     </div>
 </div>
@@ -170,7 +175,18 @@ function recalcular(){
     document.getElementById('show_isv').textContent='L. '+isv.toFixed(2);
     document.getElementById('show_tot').textContent='L. '+tot.toFixed(2);
 }
-function prepararFactura(){
+function prepararFactura(e){
+    if(!document.getElementById('fac_pac_id').value){
+        e.preventDefault();
+        document.getElementById('fac_buscar_pac').style.borderColor='#DC2626';
+        document.getElementById('fac_buscar_pac').focus();
+        return;
+    }
+    if(!facItems.length){
+        e.preventDefault();
+        OgSwal.error('Agrega al menos un ítem a la factura.');
+        return;
+    }
     const sub=facItems.reduce((a,it)=>a+it.total,0);
     const tasa=parseFloat(document.getElementById('fac_tasa').value)||0;
     const isv=sub*tasa/100;
@@ -193,7 +209,12 @@ function buscarPacFac(q){
         }).catch(()=>{});
     },300);
 }
-function selPac(id,nom){document.getElementById('fac_pac_id').value=id;document.getElementById('fac_buscar_pac').value=nom;}
+function selPac(id,nom){
+    document.getElementById('fac_pac_id').value=id;
+    document.getElementById('fac_buscar_pac').value=nom;
+    document.getElementById('fac_buscar_pac').style.borderColor='';
+    document.getElementById('fac_pac_res').style.display='none';
+}
 // reset modal al abrir
 document.getElementById('modalFactura').addEventListener('show',()=>{facItems=[];renderItems();recalcular();});
 </script>

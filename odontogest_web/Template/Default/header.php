@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="<?= APP_URL ?>Content/Dist/css/variables.css">
     <!-- Dark Mode Overrides (después de variables para mayor especificidad) -->
     <link rel="stylesheet" href="<?= APP_URL ?>Content/Dist/css/dark-mode.css">
+    <!-- Responsive: fixes para móvil y tablet -->
+    <link rel="stylesheet" href="<?= APP_URL ?>Content/Dist/css/responsive.css">
 
     <?php if (!empty($extraCss)): foreach ($extraCss as $css): ?>
         <link rel="stylesheet" href="<?= APP_URL . htmlspecialchars($css) ?>">

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_theme.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/gradient_app_bar.dart';
+import '../../../core/widgets/og_modal.dart';
 import '../../../core/session/app_session.dart';
 import '../../../data/services/auth_service.dart';
 import '../../auth/screens/login_screen.dart';
@@ -113,35 +114,22 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   void _confirmLogout() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.cardRadius),
-        title: Text('Cerrar sesión',
-            style: AppTypography.titleSmall(color: AppColors.textDark)),
-        content: Text('¿Está seguro que desea cerrar sesión?',
-            style: AppTypography.body(color: AppColors.textMuted)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar',
-                style: AppTypography.buttonSmall(color: AppColors.textMuted)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              AppSession.instance.clear();
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                (_) => false,
-              );
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: Text('Cerrar sesión',
-                style: AppTypography.buttonSmall(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
+    OgDialog.confirm(
+      context:      context,
+      title:        'Cerrar sesión',
+      message:      '¿Estás seguro que deseas cerrar sesión?\nDeberás volver a ingresar tus credenciales.',
+      confirmLabel: 'Cerrar sesión',
+      cancelLabel:  'Cancelar',
+      icon:         Icons.logout_rounded,
+      destructive:  true,
+    ).then((confirmed) {
+      if (!confirmed || !mounted) return;
+      AppSession.instance.clear();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (_) => false,
+      );
+    });
   }
 
   @override

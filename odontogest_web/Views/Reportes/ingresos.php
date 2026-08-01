@@ -1,15 +1,37 @@
-<?php $fi=htmlspecialchars($fecha_ini); $ff=htmlspecialchars($fecha_fin); ?>
+<?php $fi=htmlspecialchars($fecha_ini); $ff=htmlspecialchars($fecha_fin);
+$exportBase = APP_URL . "reportes/exportar?tipo=ingresos&fecha_ini={$fecha_ini}&fecha_fin={$fecha_fin}"; ?>
 <div><div style="padding:24px 28px;">
+
 <div class="kpi-card" style="margin-bottom:20px;">
     <form method="GET" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
         <div><a href="<?= APP_URL ?>reportes" class="btn-og-secondary"><i class="fas fa-arrow-left me-1"></i>Reportes</a></div>
         <div style="flex:1;min-width:140px;"><label class="form-label">Desde</label><input type="date" name="fecha_ini" class="form-control" value="<?= $fi ?>"></div>
         <div style="flex:1;min-width:140px;"><label class="form-label">Hasta</label><input type="date" name="fecha_fin" class="form-control" value="<?= $ff ?>"></div>
-        <button type="submit" class="btn-og-primary"><i class="fas fa-chart-bar me-1"></i>Generar</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" class="export-btns">
+            <button type="submit" class="btn-og-primary"><i class="fas fa-chart-bar me-1"></i>Generar</button>
+            <a href="<?= $exportBase ?>&formato=excel" class="btn-og-success" title="Descargar Excel">
+                <i class="fas fa-file-excel me-1"></i>Excel
+            </a>
+            <a href="<?= $exportBase ?>&formato=pdf" target="_blank" class="btn-og-secondary" title="Descargar PDF">
+                <i class="fas fa-file-pdf me-1"></i>PDF
+            </a>
+        </div>
     </form>
 </div>
+
 <div class="kpi-card" style="padding:0;overflow:hidden;">
-    <div style="padding:14px 20px;border-bottom:1px solid var(--card-border);font-weight:600;color:var(--body-text);">Ingresos del <?= $fi ?> al <?= $ff ?></div>
+    <div style="padding:14px 20px;border-bottom:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <span style="font-weight:600;color:var(--body-text);">Ingresos del <?= $fi ?> al <?= $ff ?></span>
+        <div style="display:flex;gap:8px;">
+            <a href="<?= $exportBase ?>&formato=excel" class="btn-og-success" style="font-size:.8rem;padding:5px 12px;">
+                <i class="fas fa-file-excel"></i> .xlsx
+            </a>
+            <a href="<?= $exportBase ?>&formato=pdf" target="_blank" class="btn-og-secondary" style="font-size:.8rem;padding:5px 12px;">
+                <i class="fas fa-file-pdf"></i> PDF
+            </a>
+        </div>
+    </div>
+    <div style="overflow-x:auto;">
     <table class="tabla-og">
         <thead><tr><th>Fecha</th><th>Facturas</th><th>Subtotal</th><th>ISV</th><th>Total</th></tr></thead>
         <tbody>
@@ -30,5 +52,6 @@
         <?php endif; ?>
         </tbody>
     </table>
+    </div>
 </div>
 </div></div>

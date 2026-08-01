@@ -34,11 +34,11 @@ try {
     $chk = $db->prepare("
         SELECT COUNT(*) FROM citas
         WHERE id_odontologo = :od
-            AND DATE(fecha_cita) = DATE(:fc_fecha)
-            AND TIME(fecha_cita) = TIME(:fc_hora)
+          AND DATE(fecha_cita) = DATE(:fc)
+          AND TIME(fecha_cita) = TIME(:fc)
           AND estado NOT IN ('cancelada','no_asistio')
     ");
-        $chk->execute([':od' => $idOd, ':fc_fecha' => $fecha, ':fc_hora' => $fecha]);
+    $chk->execute([':od' => $idOd, ':fc' => $fecha]);
     if ((int)$chk->fetchColumn() > 0) {
         error(409, 'El odontólogo ya tiene una cita en ese horario');
     }

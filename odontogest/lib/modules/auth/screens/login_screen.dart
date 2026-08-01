@@ -37,6 +37,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _loading = false;
+  String? _errorMsg;
 
   final _userController = TextEditingController();
   final _passController = TextEditingController();
@@ -53,11 +54,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final contrasena = _passController.text;
 
     if (usuario.isEmpty || contrasena.isEmpty) {
-      _showSnackBar('Ingresa usuario y contraseña para iniciar sesión', isError: true);
+      setState(() => _errorMsg = 'Completa usuario y contraseña');
+      _showSnackBar('Completa todos los campos', isError: true);
       return;
     }
 
-    setState(() => _loading = true);
+    setState(() { _loading = true; _errorMsg = null; });
 
     final result = await AuthService.login(
       usuario:    usuario,
@@ -77,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
         correo:    result.correo,
         telefono:  result.telefono,
       );
-      _showSnackBar('Bienvenido, ${result.nombre ?? usuario}', isError: false);
+      _showSnackBar('Bienvenido, ${result.nombre ?? usuario} ✓', isError: false);
       await Future.delayed(const Duration(milliseconds: 600));
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
@@ -86,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
+      setState(() => _errorMsg = result.errorMsg);
       _showSnackBar(result.errorMsg ?? 'Error al iniciar sesión', isError: true);
     }
   }
@@ -104,9 +107,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(child: Text(msg)),
           ],
         ),
-        backgroundColor: isError ? const Color.fromARGB(255, 235, 46, 46) : const Color.fromARGB(255, 33, 176, 85),
+        backgroundColor: isError ? AppColors.error : AppColors.success,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
         duration: Duration(seconds: isError ? 4 : 2),
       ),
@@ -140,10 +143,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Image(
-                          image: AssetImage('assets/images/logo_ortonova.png'),
-                          width: 250, height: 250,
-                        )
+                        const Icon(Icons.local_hospital,
+                            color: Colors.white, size: 72),
+                        const SizedBox(height: 12),
+                        Text('OdontoGest',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            )),
+                        const SizedBox(height: 4),
+                        Text('Sistema de Gestión Clínica',
+                            style: TextStyle(
+                                color: Colors.white70, fontSize: 13)),
                       ],
                     ),
                   ),
@@ -164,35 +177,62 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text('Usuario',
                       style: AppTypography.label(color: AppColors.primary)),
                   const SizedBox(height: 8),
-                  _inputField(
+                  TextField(
                     controller: _userController,
                     enabled: !_loading,
                     textInputAction: TextInputAction.next,
                     style: AppTypography.body(color: AppColors.textDark),
+                    decoration: _inputDeco(),
                   ),
                   const SizedBox(height: 20),
 
                   Text('Contraseña',
                       style: AppTypography.label(color: AppColors.primary)),
                   const SizedBox(height: 8),
-                  _inputField(
+                  TextField(
                     controller: _passController,
                     obscureText: _obscurePassword,
                     enabled: !_loading,
                     textInputAction: TextInputAction.done,
                     onSubmitted: (_) => _handleLogin(),
                     style: AppTypography.body(color: AppColors.textDark),
-                    suffix: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: AppColors.textMuted, size: 20,
+                    decoration: _inputDeco(
+                      suffix: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: AppColors.textMuted, size: 20,
+                        ),
+                        onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword),
                       ),
-                      onPressed: () => setState(
-                          () => _obscurePassword = !_obscurePassword),
                     ),
                   ),
+
+                  if (_errorMsg != null) ...[
+                    const SizedBox(height: 14),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.error.withAlpha(20),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: AppColors.error.withAlpha(80), width: 1),
+                      ),
+                      child: Row(children: [
+                        const Icon(Icons.error_outline,
+                            color: AppColors.error, size: 18),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(_errorMsg!,
+                              style: AppTypography.captionXs(
+                                  color: AppColors.error)),
+                        ),
+                      ]),
+                    ),
+                  ],
 
                   const SizedBox(height: 28),
                   Center(
@@ -236,57 +276,17 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _inputField({
-    required TextEditingController controller,
-    required bool enabled,
-    required TextInputAction textInputAction,
-    required TextStyle style,
-    bool obscureText = false,
-    Widget? suffix,
-    ValueChanged<String>? onSubmitted,
-  }) =>
-      Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withAlpha(38),
-              blurRadius: 18,
-              spreadRadius: -6,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: TextField(
-          controller: controller,
-          obscureText: obscureText,
-          enabled: enabled,
-          textInputAction: textInputAction,
-          onSubmitted: onSubmitted,
-          style: style,
-          decoration: _inputDeco(suffix: suffix),
-        ),
-      );
-
   InputDecoration _inputDeco({Widget? suffix}) => InputDecoration(
         suffixIcon: suffix,
         filled: true,
         fillColor: AppColors.surface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
         ),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 16, horizontal: 20),

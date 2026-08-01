@@ -1,14 +1,12 @@
 // DashboardScreen — pantalla de inicio.
 // Carga métricas y citas del día desde la API PHP.
 import 'package:flutter/material.dart';
-import 'package:odontogest/modules/expedientes/views/cumpleanos_screen.dart';
 import '../../../core/constants/app_theme.dart';
 import '../../../core/session/app_session.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../data/services/dashboard_service.dart';
 import '../../../data/services/notificaciones_service.dart';
-import '../../auth/screens/login_screen.dart';
 import '../../agenda/views/nueva_cita_screen.dart';
 import '../../expedientes/views/buscar_paciente_screen.dart';
 import 'notificaciones_screen.dart';
@@ -61,94 +59,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (mounted) setState(() => _noLeidas = r.noLeidas);
       });
     });
-  }
-
-  void _confirmLogout() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.cardRadius),
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-        actionsPadding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-        title: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: AppColors.error.withAlpha(20),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.logout_rounded,
-                  color: AppColors.error, size: 28),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              'Cerrar sesión',
-              textAlign: TextAlign.center,
-              style: AppTypography.titleSmall(color: AppColors.textDark),
-            ),
-          ],
-        ),
-        content: Text(
-          '¿Está seguro que desea cerrar sesión?',
-          textAlign: TextAlign.center,
-          style: AppTypography.body(color: AppColors.textMuted),
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          SizedBox(
-            width: 120,
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.border),
-                foregroundColor: AppColors.textDark,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              child: Text(
-                'Cancelar',
-                style: AppTypography.buttonSmall(color: AppColors.textDark),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          SizedBox(
-            width: 120,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                AppSession.instance.clear();
-                if (!mounted) return;
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (_) => false,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.error,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                elevation: 0,
-              ),
-              child: Text(
-                'Cerrar sesión',
-                style: AppTypography.buttonSmall(color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   // ── UI ────────────────────────────────────────────────────────
@@ -213,7 +123,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Stack(
           children: [
             IconButton(
-              tooltip: 'Notificaciones',
               icon: const Icon(Icons.notifications_outlined, color: Colors.white),
               onPressed: _abrirNotificaciones,
             ),
@@ -235,11 +144,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
           ],
         ),
-        IconButton(
-          tooltip: 'Cerrar sesión',
-          icon: const Icon(Icons.logout_rounded, color: Colors.white),
-          onPressed: _confirmLogout,
-        ),
+        const SizedBox(width: 4),
       ],
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.pin,
@@ -333,10 +238,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           () => Navigator.push(context,
               MaterialPageRoute(
                   builder: (_) => const BuscarPacienteScreen()))),
-      _Acceso('Cumpleaños', Icons.cake, const Color.fromARGB(255, 225, 34, 114),
-          () => Navigator.push(context,
-              MaterialPageRoute(
-                  builder: (_) => const CumpleanosScreen()))),
     ];
 
     return AppCard(

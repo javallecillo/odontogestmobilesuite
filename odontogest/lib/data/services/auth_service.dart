@@ -58,7 +58,9 @@ class AuthService {
           token:      body['token']      as String?,
           rol:        body['rol']        as String?,
           nombre:     body['nombre']     as String?,
-          idUsuario:  body['id_usuario'] as int?,
+          // PHP puede devolver id como string según la configuración de PDO
+          idUsuario:  (body['id_usuario'] as num?)?.toInt()
+              ?? int.tryParse(body['id_usuario']?.toString() ?? ''),
           usuario:    body['usuario']    as String?,
           correo:     body['correo']     as String?,
           telefono:   body['telefono']   as String?,

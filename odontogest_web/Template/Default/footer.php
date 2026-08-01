@@ -9,6 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- OdontoGest UI helpers (OgSwal + ogModal) -->
+    <script src="<?= APP_URL ?>Content/Dist/js/og-ui.js"></script>
 
     <?php if (!empty($extraJs)): foreach ($extraJs as $js): ?>
         <script src="<?= APP_URL . htmlspecialchars($js) ?>"></script>

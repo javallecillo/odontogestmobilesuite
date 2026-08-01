@@ -14,8 +14,11 @@ class PacientesModel {
         $p      = [];
 
         if (!empty($f['buscar'])) {
-            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q OR p.telefono LIKE :q OR p.correo LIKE :q OR p.dni LIKE :q)";
-            $p[':q'] = '%'.$f['buscar'].'%';
+            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q1 OR p.telefono LIKE :q2 OR p.correo LIKE :q3 OR p.dni LIKE :q4)";
+            $p[':q1'] = '%'.$f['buscar'].'%';
+            $p[':q2'] = '%'.$f['buscar'].'%';
+            $p[':q3'] = '%'.$f['buscar'].'%';
+            $p[':q4'] = '%'.$f['buscar'].'%';
         }
         if (!empty($f['estado'])) {
             $where[] = 'p.estado = :est';
@@ -35,10 +38,9 @@ class PacientesModel {
             FROM pacientes p
             WHERE $w
             ORDER BY p.apellidos, p.nombre
-            LIMIT 15 OFFSET :off
+            LIMIT 15 OFFSET {$offset}
         ");
         foreach ($p as $k => $v) $st->bindValue($k, $v);
-        $st->bindValue(':off', $offset, PDO::PARAM_INT);
         $st->execute();
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -49,8 +51,11 @@ class PacientesModel {
         $p     = [];
 
         if (!empty($f['buscar'])) {
-            $where[] = "(CONCAT(nombre,' ',apellidos) LIKE :q OR telefono LIKE :q OR correo LIKE :q OR dni LIKE :q)";
-            $p[':q'] = '%'.$f['buscar'].'%';
+            $where[] = "(CONCAT(nombre,' ',apellidos) LIKE :q1 OR telefono LIKE :q2 OR correo LIKE :q3 OR dni LIKE :q4)";
+            $p[':q1'] = '%'.$f['buscar'].'%';
+            $p[':q2'] = '%'.$f['buscar'].'%';
+            $p[':q3'] = '%'.$f['buscar'].'%';
+            $p[':q4'] = '%'.$f['buscar'].'%';
         }
         if (!empty($f['estado'])) { $where[] = 'estado = :est'; $p[':est'] = $f['estado']; }
 
@@ -147,6 +152,21 @@ class PacientesModel {
             ':est'  => $d['estado']                      ?? 'activo',
             ':id'   => $id,
         ]);
+    }
+
+    /** Búsqueda rápida para autocomplete (máx. $limite resultados) */
+    public static function buscar(string $q, int $limite = 15): array {
+        $db = Conexion::getInstance();
+        $st = $db->prepare("
+            SELECT id_paciente, CONCAT(nombre,' ',apellidos) AS nombre_completo
+            FROM pacientes
+            WHERE estado='activo'
+              AND (CONCAT(nombre,' ',apellidos) LIKE :q1 OR dni LIKE :q2)
+            ORDER BY nombre, apellidos
+            LIMIT {$limite}
+        ");
+        $st->execute([':q1' => '%'.$q.'%', ':q2' => '%'.$q.'%']);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function cambiarEstado(int $id, string $estado): void {

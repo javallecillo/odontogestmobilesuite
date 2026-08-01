@@ -8,6 +8,7 @@ class AutoLoad {
                 ROOT_PATH . 'Controllers/',
                 ROOT_PATH . 'Models/',
                 ROOT_PATH . 'Entity/',
+                ROOT_PATH . 'Lib/',
             ];
             foreach ($dirs as $dir) {
                 $file = $dir . $class . '.php';

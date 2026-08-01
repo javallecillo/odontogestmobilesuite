@@ -12,15 +12,23 @@ class NotificacionesController {
         header('Content-Type: application/json; charset=utf-8');
 
         $db = Conexion::getInstance();
-        $s  = $db->prepare(
-            'SELECT id_notificacion, titulo, mensaje, tipo, leida, fecha
-             FROM notificaciones
-             WHERE id_usuario = :id OR id_usuario IS NULL
-             ORDER BY leida ASC, fecha DESC
-             LIMIT 20'
-        );
-        $s->execute([':id' => Auth::id()]);
-        $lista = $s->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            // Evitar columna inexistente 'tipo' que rompe en ambientes con esquema distinto
+            $s  = $db->prepare(
+                'SELECT id_notificacion, titulo, mensaje, leida, fecha
+                 FROM notificaciones
+                 WHERE id_usuario = :id OR id_usuario IS NULL
+                 ORDER BY leida ASC, fecha DESC
+                 LIMIT 20'
+            );
+            $s->execute([':id' => Auth::id()]);
+            $lista = $s->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['success' => false, 'mensaje' => 'Error de base de datos en notificaciones']);
+            exit;
+        }
 
         $noLeidas = (int)array_sum(array_column($lista, 'leida') === array_map(fn() => '0', $lista)
             ? [] : array_filter(array_column($lista, 'leida'), fn($v) => $v == 0));

@@ -42,8 +42,9 @@ class FacturacionController {
     public function crear(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'facturacion'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'facturacion?error=csrf'); exit;
+        }
         $data = [
             'id_paciente' => (int)($_POST['id_paciente'] ?? 0),
             'id_cita'     => (int)($_POST['id_cita']     ?? 0) ?: null,
@@ -65,8 +66,9 @@ class FacturacionController {
     public function marcarPagada(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'facturacion'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'facturacion?error=csrf'); exit;
+        }
         $id = (int)($_POST['id_factura'] ?? 0);
         FacturacionModel::cambiarEstado($id, 'pagada');
         AuditoriaModel::registrar('facturacion', 'editar', "Factura #{$id}");
@@ -80,8 +82,9 @@ class FacturacionController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'facturacion'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'facturacion?error=csrf'); exit;
+        }
         $id     = (int)($_POST['id_factura'] ?? 0);
         $motivo = trim($_POST['motivo'] ?? '');
 

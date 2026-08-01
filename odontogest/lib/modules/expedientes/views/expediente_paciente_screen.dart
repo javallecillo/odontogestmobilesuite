@@ -2,8 +2,10 @@
 // Tabs: Resumen | Odontograma | Recetas | Tratamientos | Fotos
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../core/app_config.dart';
 import '../../../core/constants/app_theme.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/og_modal.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../data/services/expediente_service.dart';
 import 'odontogram_screen.dart';
@@ -569,37 +571,30 @@ class _TabFotosState extends State<_TabFotos> {
 
   // Muestra opciones cámara / galería
   void _mostrarOpciones() {
-    showModalBottomSheet(
+    OgBottomSheet.show<String>(
       context: context,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 8),
-            Container(
-              width: 40, height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2)),
-            ),
-            const SizedBox(height: 12),
-            ListTile(
-              leading: const Icon(Icons.camera_alt, color: AppColors.primary),
-              title: const Text('Tomar foto'),
-              onTap: () { Navigator.pop(context); _seleccionar(ImageSource.camera); },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library, color: AppColors.primary),
-              title: const Text('Elegir de galería'),
-              onTap: () { Navigator.pop(context); _seleccionar(ImageSource.gallery); },
-            ),
-            const SizedBox(height: 12),
-          ],
+      title:   'Agregar foto',
+      icon:    Icons.add_a_photo_outlined,
+      items: const [
+        OgActionItem(
+          label:    'Tomar foto',
+          subtitle: 'Usar la cámara del dispositivo',
+          icon:     Icons.camera_alt_rounded,
+          color:    AppColors.primary,
+          value:    'camera',
         ),
-      ),
-    );
+        OgActionItem(
+          label:    'Elegir de galería',
+          subtitle: 'Seleccionar imagen existente',
+          icon:     Icons.photo_library_rounded,
+          color:    AppColors.success,
+          value:    'gallery',
+        ),
+      ],
+    ).then((sel) {
+      if (sel == 'camera')  _seleccionar(ImageSource.camera);
+      if (sel == 'gallery') _seleccionar(ImageSource.gallery);
+    });
   }
 
   Future<void> _seleccionar(ImageSource source) async {
@@ -615,29 +610,16 @@ class _TabFotosState extends State<_TabFotos> {
   Future<void> _subir(XFile file) async {
     // Pedir descripción opcional
     String descripcion = '';
-    final ctrl = TextEditingController();
     if (mounted) {
-      await showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Descripción (opcional)'),
-          content: TextField(
-            controller: ctrl,
-            autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'Ej: Antes del tratamiento, radiografía…'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Omitir')),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-              onPressed: () { descripcion = ctrl.text.trim(); Navigator.pop(context); },
-              child: const Text('OK', style: TextStyle(color: Colors.white))),
-          ],
-        ),
+      final desc = await OgDialog.input(
+        context:      context,
+        title:        'Descripción de la foto',
+        hint:         'Ej: Antes del tratamiento, radiografía…',
+        confirmLabel: 'Subir foto',
+        cancelLabel:  'Omitir',
+        icon:         Icons.image_outlined,
       );
+      descripcion = desc ?? '';
     }
     if (!mounted) return;
 
@@ -698,7 +680,7 @@ class _TabFotosState extends State<_TabFotos> {
                         fit: StackFit.expand,
                         children: [
                           Image.network(
-                            'http://localhost${f.url}',
+                            '${AppConfig.serverOrigin}${f.url}',
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Container(
                               color: AppColors.primaryLight,

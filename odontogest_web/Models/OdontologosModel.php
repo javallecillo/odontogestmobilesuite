@@ -6,8 +6,10 @@ class OdontologosModel {
         $offset = ($f['pagina'] - 1) * 15;
         $where  = ['1=1']; $p = [];
         if (!empty($f['buscar'])) {
-            $where[] = "(CONCAT(o.nombre,' ',o.apellidos) LIKE :q OR o.numero_licencia LIKE :q OR o.correo LIKE :q)";
-            $p[':q'] = '%' . $f['buscar'] . '%';
+            $where[] = "(CONCAT(o.nombre,' ',o.apellidos) LIKE :q1 OR o.numero_licencia LIKE :q2 OR o.correo LIKE :q3)";
+            $p[':q1'] = '%' . $f['buscar'] . '%';
+            $p[':q2'] = '%' . $f['buscar'] . '%';
+            $p[':q3'] = '%' . $f['buscar'] . '%';
         }
         if (!empty($f['estado'])) { $where[] = 'o.estado=:est'; $p[':est'] = $f['estado']; }
         $w  = implode(' AND ', $where);
@@ -18,10 +20,9 @@ class OdontologosModel {
             LEFT JOIN especialidades e ON e.id_especialidad = o.id_especialidad
             LEFT JOIN cargo          c ON c.id_cargo        = o.id_cargo
             LEFT JOIN usuarios       u ON u.id_usuario      = o.id_usuario
-            WHERE $w ORDER BY o.apellidos, o.nombre LIMIT 15 OFFSET :off
+            WHERE $w ORDER BY o.apellidos, o.nombre LIMIT 15 OFFSET {$offset}
         ");
         foreach ($p as $k => $v) $st->bindValue($k, $v);
-        $st->bindValue(':off', $offset, PDO::PARAM_INT);
         $st->execute();
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -29,7 +30,7 @@ class OdontologosModel {
     public static function total(array $f): int {
         $db    = Conexion::getInstance();
         $where = ['1=1']; $p = [];
-        if (!empty($f['buscar'])) { $where[] = "(CONCAT(o.nombre,' ',o.apellidos) LIKE :q OR o.numero_licencia LIKE :q)"; $p[':q'] = '%' . $f['buscar'] . '%'; }
+        if (!empty($f['buscar'])) { $where[] = "(CONCAT(o.nombre,' ',o.apellidos) LIKE :q1 OR o.numero_licencia LIKE :q2)"; $p[':q1'] = '%' . $f['buscar'] . '%'; $p[':q2'] = '%' . $f['buscar'] . '%'; }
         if (!empty($f['estado'])) { $where[] = 'o.estado=:est'; $p[':est'] = $f['estado']; }
         $w  = implode(' AND ', $where);
         $st = $db->prepare("SELECT COUNT(*) FROM odontologos o WHERE $w");

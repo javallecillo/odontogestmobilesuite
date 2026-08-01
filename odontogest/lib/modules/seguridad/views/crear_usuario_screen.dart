@@ -5,9 +5,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/app_theme.dart';
+import '../../../core/app_config.dart';
 import '../../../core/session/app_session.dart';
 
-const String _kBase = 'http://localhost/odontogest_api';
+const String _kBase = AppConfig.apiBase;
 
 class CrearUsuarioScreen extends StatefulWidget {
   const CrearUsuarioScreen({super.key});

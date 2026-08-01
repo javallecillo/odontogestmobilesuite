@@ -24,17 +24,17 @@ class AppColors {
 
   // ── Marca principal ────────────────────────────────────────────────────────
   /// Azul principal de la clínica — botones, AppBar, íconos activos
-  static const Color primary     = Color(0xFF2F405A);
+  static const Color primary     = Color(0xFF1A56AB);
 
   /// Azul oscuro — gradientes, hover states
-  static const Color primaryDark = Color(0xFF2F405A);
+  static const Color primaryDark = Color(0xFF1847A0);
 
   /// Azul muy claro — fondos de chips, avatares, indicadores
-  static const Color primaryLight = Color(0xFFF8FCED);
+  static const Color primaryLight = Color(0xFFE0ECFF);
 
   // ── Fondos ─────────────────────────────────────────────────────────────────
   /// Fondo general de pantallas
-  static const Color background  = Color(0xFFF8FCED);
+  static const Color background  = Color(0xFFECF1F8);
 
   /// Fondo de tarjetas y superficies elevadas
   static const Color surface     = Colors.white;

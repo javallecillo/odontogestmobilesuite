@@ -127,7 +127,7 @@ foreach (array_slice(explode(' ', $nombreUsuario), 0, 2) as $parte) {
     <!-- Título página -->
     <div class="header-page-info">
         <div class="header-title"><?= htmlspecialchars($pageTitle ?? 'Panel') ?></div>
-        <div class="header-sub">Clínica Dental OrtoNova — Honduras</div>
+        <div class="header-sub">Clínica Dental Paz — Honduras</div>
     </div>
 
     <!-- Buscador centrado -->
@@ -303,7 +303,10 @@ document.addEventListener('DOMContentLoaded', ogUpdateDarkIcon);
     const overlay  = document.getElementById('sidebarOverlay');
     const btnToggle= document.getElementById('btnMenuToggle');
     const btnClose = document.getElementById('btnCloseSidebar');
-    let collapsed  = localStorage.getItem('og_sidebar_collapsed')==='1';
+    // En móvil siempre empieza cerrado; en escritorio respeta localStorage
+    let collapsed  = window.innerWidth < 992
+        ? true
+        : localStorage.getItem('og_sidebar_collapsed') === '1';
 
     // Agregar title para tooltips en modo collapsed
     function syncTooltips(isCollapsed) {

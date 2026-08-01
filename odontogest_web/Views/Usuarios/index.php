@@ -14,7 +14,7 @@ $estadoBadge = ['activo' => 'badge-activo', 'inactivo' => 'badge-inactivo', 'blo
     <!-- ── Cabecera ──── -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div>
-            <h4 style="margin:0;font-weight:800;color:#005C3E;">
+            <h4 style="margin:0;font-weight:800;color:#1A56AB;">
                 <i class="fas fa-user-cog me-2"></i>Gestión de Usuarios
             </h4>
             <small style="color:#6b7280;"><?= $data['total'] ?> usuario<?= $data['total'] !== 1 ? 's' : '' ?> encontrado<?= $data['total'] !== 1 ? 's' : '' ?></small>
@@ -26,7 +26,7 @@ $estadoBadge = ['activo' => 'badge-activo', 'inactivo' => 'badge-inactivo', 'blo
 
     <!-- ── Filtros ──── -->
     <form method="GET" action="<?= APP_URL ?>Usuarios/index"
-          style="background:#fff;border-radius:12px;border:1px solid rgba(0,92,62,.10);padding:16px 20px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+          style="background:#fff;border-radius:12px;border:1px solid rgba(26,86,171,.10);padding:16px 20px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
         <div style="flex:1;min-width:200px;">
             <label style="font-size:.78rem;font-weight:600;color:#374151;margin-bottom:4px;display:block;">Buscar</label>
             <div class="input-group">
@@ -66,7 +66,7 @@ $estadoBadge = ['activo' => 'badge-activo', 'inactivo' => 'badge-inactivo', 'blo
     </form>
 
     <!-- ── Tabla ──── -->
-    <div style="background:#fff;border-radius:12px;border:1px solid rgba(0,92,62,.10);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);">
+    <div style="background:#fff;border-radius:12px;border:1px solid rgba(26,86,171,.10);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);">
         <?php if (empty($data['usuarios'])): ?>
         <div style="padding:48px;text-align:center;color:#6b7280;">
             <i class="fas fa-user-slash fa-2x mb-3 d-block" style="opacity:.25;"></i>
@@ -110,7 +110,7 @@ $estadoBadge = ['activo' => 'badge-activo', 'inactivo' => 'badge-inactivo', 'blo
                 </td>
                 <td style="text-align:center;white-space:nowrap;">
                     <a href="<?= APP_URL ?>Usuarios/editar/<?= $u['id_usuario'] ?>"
-                       class="btn btn-sm" style="background:rgba(0,92,62,.08);color:#005C3E;border-radius:6px;margin-right:4px;"
+                       class="btn btn-sm" style="background:rgba(26,86,171,.08);color:#1A56AB;border-radius:6px;margin-right:4px;"
                        title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
@@ -137,7 +137,7 @@ $estadoBadge = ['activo' => 'badge-activo', 'inactivo' => 'badge-inactivo', 'blo
 
         <!-- ── Paginación ──── -->
         <?php if ($data['pages'] > 1): ?>
-        <div style="padding:12px 20px;border-top:1px solid rgba(0,92,62,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div style="padding:12px 20px;border-top:1px solid rgba(26,86,171,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
             <small style="color:#6b7280;">Página <?= $page ?> de <?= $data['pages'] ?></small>
             <div style="display:flex;gap:6px;">
                 <?php
@@ -147,7 +147,7 @@ $estadoBadge = ['activo' => 'badge-activo', 'inactivo' => 'badge-inactivo', 'blo
                 ?>
                 <a href="<?= $base . $p ?>"
                    style="padding:5px 12px;border-radius:6px;font-size:.83rem;font-weight:<?= $active ? '700' : '400' ?>;
-                          background:<?= $active ? '#005C3E' : '#f0f4f2' ?>;
+                          background:<?= $active ? '#1A56AB' : '#f0f4f2' ?>;
                           color:<?= $active ? '#fff' : '#374151' ?>;text-decoration:none;">
                     <?= $p ?>
                 </a>
@@ -175,7 +175,7 @@ document.querySelectorAll('.btn-toggle-estado').forEach(btn => {
             title: `¿${accion.charAt(0).toUpperCase()+accion.slice(1)} usuario?`,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#005C3E',
+            confirmButtonColor: '#1A56AB',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Sí, confirmar',
             cancelButtonText: 'Cancelar',
@@ -189,10 +189,10 @@ document.querySelectorAll('.btn-toggle-estado').forEach(btn => {
         });
         const data = await res.json();
         if (data.success) {
-            Swal.fire({ icon:'success', title:'Listo', text: `Usuario ${data.estado}`, confirmButtonColor:'#005C3E', timer:1500, showConfirmButton:false });
+            Swal.fire({ icon:'success', title:'Listo', text: `Usuario ${data.estado}`, confirmButtonColor:'#1A56AB', timer:1500, showConfirmButton:false });
             setTimeout(() => location.reload(), 1600);
         } else {
-            Swal.fire({ icon:'error', title:'Error', text: data.error, confirmButtonColor:'#005C3E' });
+            Swal.fire({ icon:'error', title:'Error', text: data.error, confirmButtonColor:'#1A56AB' });
         }
     });
 });
@@ -208,7 +208,7 @@ document.querySelectorAll('.btn-reset-pass').forEach(btn => {
             html: `<p style="margin-bottom:8px;color:#374151;">Usuario: <strong>${nombre}</strong></p>
                    <input type="password" id="swal-pass" class="swal2-input" placeholder="Nueva contraseña (mín. 6 chars)">`,
             confirmButtonText: 'Guardar',
-            confirmButtonColor: '#005C3E',
+            confirmButtonColor: '#1A56AB',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             preConfirm: () => {
@@ -226,9 +226,9 @@ document.querySelectorAll('.btn-reset-pass').forEach(btn => {
         });
         const data = await res.json();
         if (data.success) {
-            Swal.fire({ icon:'success', title:'Listo', text:'Contraseña actualizada', confirmButtonColor:'#005C3E', timer:1500, showConfirmButton:false });
+            Swal.fire({ icon:'success', title:'Listo', text:'Contraseña actualizada', confirmButtonColor:'#1A56AB', timer:1500, showConfirmButton:false });
         } else {
-            Swal.fire({ icon:'error', title:'Error', text: data.error, confirmButtonColor:'#005C3E' });
+            Swal.fire({ icon:'error', title:'Error', text: data.error, confirmButtonColor:'#1A56AB' });
         }
     });
 });

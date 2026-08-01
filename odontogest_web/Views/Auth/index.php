@@ -253,10 +253,42 @@
             text-align: center;
         }
 
-        /* ── Responsive ─────────────────────────────────── */
+        /* ── Responsive — móvil ─────────────────────────────── */
         @media (max-width: 640px) {
-            .login-left { display: none; }
-            .login-right { padding: 40px 28px 32px; }
+            body {
+                background: linear-gradient(145deg, #1A56AB 0%, #0C1F46 100%);
+                padding: 0;
+                align-items: flex-start;
+            }
+            .login-wrapper {
+                border-radius: 0;
+                min-height: 100vh;
+                flex-direction: column;
+                box-shadow: none;
+                max-width: 100%;
+            }
+            /* Panel azul: banner superior compacto con burbujas */
+            .login-left {
+                flex: 0 0 auto;
+                padding: 44px 24px 32px;
+                justify-content: center;
+                align-items: center;
+                min-height: auto;
+            }
+            .brand-clinic  { margin-bottom: 0; }
+            .feature-list  { display: none !important; }
+
+            /* Panel blanco: tarjeta con bordes redondeados arriba */
+            .login-right {
+                flex: 1;
+                border-radius: 24px 24px 0 0;
+                padding: 36px 28px 32px;
+                box-shadow: 0 -8px 32px rgba(0,0,0,.18);
+            }
+        }
+        @media (max-width: 380px) {
+            .login-right { padding: 28px 20px 24px; }
+            .brand-name  { font-size: 22px; }
         }
     </style>
 </head>

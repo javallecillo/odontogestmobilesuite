@@ -9,16 +9,20 @@ class PerfilController {
     public function actualizar(): void {
         Auth::requireLogin();
         if($_SERVER['REQUEST_METHOD']!=='POST'){header('Location:'.APP_URL.'perfil');exit;}
-        Csrf::verify($_POST['csrf_token']??'');
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'perfil?error=csrf'); exit;
+        }
         PerfilModel::actualizarDatos(Auth::id(),$_POST);
         // Actualizar nombre en sesión
-        $_SESSION[SESSION_NAME.'_nombre'] = trim($_POST['nombre_completo']??'');
+        $_SESSION['user']['nombre'] = trim($_POST['nombre_completo'] ?? '');
         header('Location:'.APP_URL.'perfil?ok=1'); exit;
     }
     public function password(): void {
         Auth::requireLogin();
         if($_SERVER['REQUEST_METHOD']!=='POST'){header('Location:'.APP_URL.'perfil');exit;}
-        Csrf::verify($_POST['csrf_token']??'');
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'perfil?error=csrf'); exit;
+        }
         $actual  = $_POST['password_actual']  ?? '';
         $nuevo   = $_POST['password_nuevo']   ?? '';
         $confirm = $_POST['password_confirm'] ?? '';

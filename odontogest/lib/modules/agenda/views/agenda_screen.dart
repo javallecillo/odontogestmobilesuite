@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_theme.dart';
+import '../../../core/widgets/og_modal.dart';
 import '../../../data/services/agenda_service.dart';
 import '../../expedientes/views/buscar_paciente_screen.dart';
 
@@ -47,33 +48,57 @@ class _AgendaScreenState extends State<AgendaScreen> {
   }
 
   Future<void> _accionEstado(CitaAgenda cita) async {
-    final opts = <String, String>{};
-    if (cita.estado != 'confirmada')     opts['Confirmar']   = 'confirmada';
-    if (cita.estado != 'completada')     opts['Completar']   = 'completada';
-    if (cita.estado != 'cancelada')      opts['Cancelar']    = 'cancelada';
-    if (cita.asistencia == 'pendiente')  opts['Asistió']     = '__asistio';
-    if (cita.asistencia != 'no_asistio') opts['No asistió']  = '__noasistio';
+    // Construir las opciones disponibles según el estado actual
+    final items = <OgActionItem>[
+      if (cita.estado != 'confirmada')
+        const OgActionItem(
+          label:    'Confirmar cita',
+          subtitle: 'El paciente fue contactado',
+          icon:     Icons.check_circle_outline_rounded,
+          color:    AppColors.info,
+          value:    'confirmada',
+        ),
+      if (cita.estado != 'completada')
+        const OgActionItem(
+          label:    'Completar cita',
+          subtitle: 'La consulta finalizó',
+          icon:     Icons.task_alt_rounded,
+          color:    AppColors.success,
+          value:    'completada',
+        ),
+      if (cita.asistencia == 'pendiente')
+        const OgActionItem(
+          label:    'Marcar asistencia',
+          subtitle: 'El paciente se presentó',
+          icon:     Icons.how_to_reg_rounded,
+          color:    AppColors.primary,
+          value:    '__asistio',
+        ),
+      if (cita.asistencia != 'no_asistio')
+        const OgActionItem(
+          label:    'No se presentó',
+          subtitle: 'Registrar inasistencia',
+          icon:     Icons.person_off_outlined,
+          color:    AppColors.warning,
+          value:    '__noasistio',
+          destructive: true,
+        ),
+      if (cita.estado != 'cancelada')
+        const OgActionItem(
+          label:    'Cancelar cita',
+          subtitle: 'Esta acción no se puede deshacer',
+          icon:     Icons.cancel_outlined,
+          color:    AppColors.error,
+          value:    'cancelada',
+          destructive: true,
+        ),
+    ];
 
-    final sel = await showModalBottomSheet<String>(
+    final sel = await OgBottomSheet.show<String>(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 12),
-          Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Text('Cambiar estado', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          ),
-          ...opts.entries.map((e) => ListTile(
-            title: Text(e.key),
-            leading: const Icon(Icons.edit_note, color: _primary),
-            onTap: () => Navigator.pop(context, e.value),
-          )),
-          const SizedBox(height: 20),
-        ],
-      ),
+      title:   'Cambiar estado',
+      icon:    Icons.edit_calendar_rounded,
+      items:   items,
     );
 
     if (sel == null || !mounted) return;
@@ -94,7 +119,17 @@ class _AgendaScreenState extends State<AgendaScreen> {
         _cargar();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al cambiar estado'), backgroundColor: Colors.red),
+          SnackBar(
+            content: const Row(children: [
+              Icon(Icons.error_outline, color: Colors.white, size: 18),
+              SizedBox(width: 8),
+              Text('Error al cambiar estado'),
+            ]),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.all(16),
+          ),
         );
       }
     }

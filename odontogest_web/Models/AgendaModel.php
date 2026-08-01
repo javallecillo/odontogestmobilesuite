@@ -20,11 +20,14 @@ class AgendaModel {
             $p[':estado'] = $f['estado'];
         }
         if (!empty($f['buscar'])) {
-            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q OR CONCAT(o.nombre,' ',o.apellidos) LIKE :q)";
-            $p[':q'] = '%'.$f['buscar'].'%';
+            // Usar :q1 y :q2 — PDO con emulate_prepares=false no acepta el mismo param dos veces
+            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q1 OR CONCAT(o.nombre,' ',o.apellidos) LIKE :q2)";
+            $p[':q1'] = '%'.$f['buscar'].'%';
+            $p[':q2'] = '%'.$f['buscar'].'%';
         }
 
         $w  = implode(' AND ', $where);
+        // Interpolar $offset directamente — PDO con emulate_prepares=false falla con :param en LIMIT
         $st = $db->prepare("
             SELECT c.id_cita, c.fecha_cita,
                    DATE(c.fecha_cita) AS fecha, TIME(c.fecha_cita) AS hora,
@@ -39,10 +42,9 @@ class AgendaModel {
             LEFT JOIN servicios s ON s.id_servicio = c.id_servicio
             WHERE $w
             ORDER BY c.fecha_cita DESC
-            LIMIT 15 OFFSET :off
+            LIMIT 15 OFFSET {$offset}
         ");
         foreach ($p as $k => $v) $st->bindValue($k, $v);
-        $st->bindValue(':off', $offset, PDO::PARAM_INT);
         $st->execute();
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -55,8 +57,9 @@ class AgendaModel {
         if (!empty($f['fecha']))  { $where[] = 'DATE(c.fecha_cita) = :fecha'; $p[':fecha'] = $f['fecha']; }
         if (!empty($f['estado'])) { $where[] = 'c.estado = :estado';          $p[':estado'] = $f['estado']; }
         if (!empty($f['buscar'])) {
-            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q OR CONCAT(o.nombre,' ',o.apellidos) LIKE :q)";
-            $p[':q'] = '%'.$f['buscar'].'%';
+            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q1 OR CONCAT(o.nombre,' ',o.apellidos) LIKE :q2)";
+            $p[':q1'] = '%'.$f['buscar'].'%';
+            $p[':q2'] = '%'.$f['buscar'].'%';
         }
         $w  = implode(' AND ', $where);
         $st = $db->prepare("SELECT COUNT(*) FROM citas c JOIN pacientes p ON p.id_paciente=c.id_paciente JOIN odontologos o ON o.id_odontologo=c.id_odontologo WHERE $w");
@@ -79,7 +82,8 @@ class AgendaModel {
 
     public static function insertar(array $d): int {
         $db        = Conexion::getInstance();
-        $fechaCita = $d['fecha_cita']; // 'YYYY-MM-DD HH:MM'
+        // datetime-local envía 'YYYY-MM-DDTHH:MM' — normalizar a 'YYYY-MM-DD HH:MM'
+        $fechaCita = str_replace('T', ' ', trim($d['fecha_cita']));
         $fecha     = substr($fechaCita, 0, 10);
         $hora      = substr($fechaCita, 11, 5);
         $mapDia    = ['Monday'=>'lunes','Tuesday'=>'martes','Wednesday'=>'miercoles',

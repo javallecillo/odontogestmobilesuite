@@ -42,8 +42,9 @@ class ExpedientesController {
     public function agregarNota(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'expedientes'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'expedientes?error=csrf'); exit;
+        }
         $id_paciente = (int)($_POST['id_paciente'] ?? 0);
         $id_cita     = (int)($_POST['id_cita']     ?? 0) ?: null;
         $nota        = trim($_POST['nota']          ?? '');
@@ -58,8 +59,9 @@ class ExpedientesController {
     public function guardarOdontograma(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'expedientes'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'expedientes?error=csrf'); exit;
+        }
         $id_paciente = (int)($_POST['id_paciente'] ?? 0);
         // Guardado pieza individual desde el formulario del odontograma
         $dientes = [
@@ -80,8 +82,9 @@ class ExpedientesController {
     public function guardarExpediente(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'expedientes'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'expedientes?error=csrf'); exit;
+        }
         $id_paciente = (int)($_POST['id_paciente'] ?? 0);
 
         // 1. Guardar datos base del expediente (sangre, antecedentes, observaciones)

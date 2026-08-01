@@ -7,14 +7,17 @@
 require_once __DIR__ . '/../core/db.php';
 require_once __DIR__ . '/../core/Response.php';
 
-// ── CORS — permite llamadas desde Flutter (emulador / dispositivo) ──
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
+// Registro sencillo para debugging: escribir método, URI y body entrante.
+// Archivo: odontogest_web/odontogest_api/debug.log (asegúrate de permisos de escritura)
+try {
+    $debugPath = __DIR__ . '/../debug.log';
+    $method = $_SERVER['REQUEST_METHOD'] ?? 'UNKNOWN';
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    $headers = function_exists('getallheaders') ? json_encode(getallheaders()) : '';
+    $bodyRaw = file_get_contents('php://input');
+    @file_put_contents($debugPath, date('c') . " | $method $uri | headers: $headers | body: " . substr($bodyRaw, 0, 2000) . "\n", FILE_APPEND);
+} catch (Exception $e) {
+    // no bloquear si falla el logging
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -38,22 +41,22 @@ if ($usuario === '' || $contrasena === '') {
 // ── Buscar usuario en la BD ───────────────────────────────────
 try {
     $db  = getDB();
-    $sql = 'SELECT u.id_usuario, u.usuario, u.contrasena,
+    $sql = "SELECT u.id_usuario, u.usuario, u.contrasena,
                    u.nombre_completo, u.correo,
-                   COALESCE(u.telefono, "") AS telefono,
+                   COALESCE(u.telefono, '') AS telefono,
                    u.estado,
                    r.nombre AS rol
             FROM usuarios u
             JOIN roles r ON r.id_rol = u.id_rol
             WHERE u.usuario = :usuario
-            LIMIT 1';
+            LIMIT 1";
 
     $stmt = $db->prepare($sql);
     $stmt->execute([':usuario' => $usuario]);
     $user = $stmt->fetch();
 
 } catch (PDOException $e) {
-    error(500, 'Error de base de datos: ' . $e->getMessage());
+    error(500, 'Error de base de datos');
 }
 
 // ── Validaciones ──────────────────────────────────────────────

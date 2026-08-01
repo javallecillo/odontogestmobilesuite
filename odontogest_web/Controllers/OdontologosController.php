@@ -22,7 +22,9 @@ class OdontologosController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location:' . APP_URL . 'odontologos'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'odontologos?error=csrf'); exit;
+        }
         $id = OdontologosModel::insertar($_POST);
         AuditoriaModel::registrar('odontologos', 'crear', "Odontólogo #{$id}");
         header('Location:' . APP_URL . 'odontologos?ok=creado'); exit;
@@ -32,7 +34,9 @@ class OdontologosController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location:' . APP_URL . 'odontologos'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'odontologos?error=csrf'); exit;
+        }
         $id = (int)($_POST['id_odontologo'] ?? 0);
         OdontologosModel::actualizar($id, $_POST);
         AuditoriaModel::registrar('odontologos', 'editar', "Odontólogo #{$id}");
@@ -43,7 +47,9 @@ class OdontologosController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location:' . APP_URL . 'odontologos'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'odontologos?error=csrf'); exit;
+        }
         $id = (int)($_POST['id_odontologo'] ?? 0);
         OdontologosModel::toggleEstado($id);
         AuditoriaModel::registrar('odontologos', 'toggle', "Odontólogo #{$id}");

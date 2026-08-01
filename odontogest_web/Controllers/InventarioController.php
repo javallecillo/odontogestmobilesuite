@@ -29,8 +29,9 @@ class InventarioController {
     public function crear(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'inventario'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'inventario?error=csrf'); exit;
+        }
         $data = [
             'id_proveedor'  => (int)($_POST['id_proveedor']  ?? 0) ?: null,
             'nombre'        => trim($_POST['nombre']          ?? ''),
@@ -53,8 +54,9 @@ class InventarioController {
     public function actualizar(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'inventario'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'inventario?error=csrf'); exit;
+        }
         $id   = (int)($_POST['id_producto'] ?? 0);
         $data = [
             'id_proveedor'  => (int)($_POST['id_proveedor']  ?? 0) ?: null,
@@ -72,16 +74,16 @@ class InventarioController {
         InventarioModel::actualizar($id, $data);
         AuditoriaModel::registrar('inventario', 'editar', "Producto #{$id}");
 
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true]);
+        header('Location: ' . APP_URL . 'inventario?ok=actualizado');
         exit;
     }
 
     public function ajustarStock(): void {
         Auth::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'inventario'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'inventario?error=csrf'); exit;
+        }
         $id       = (int)($_POST['id_producto'] ?? 0);
         $cantidad = (int)($_POST['cantidad']     ?? 0);
         $tipo     = $_POST['tipo'] ?? 'entrada'; // 'entrada' | 'salida' | 'ajuste'
@@ -99,8 +101,9 @@ class InventarioController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'inventario'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'inventario?error=csrf'); exit;
+        }
         $id = (int)($_POST['id_producto'] ?? 0);
         InventarioModel::cambiarEstado($id, 'inactivo');
         AuditoriaModel::registrar('inventario', 'eliminar', "Producto #{$id}");

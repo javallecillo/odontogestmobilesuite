@@ -1,4 +1,4 @@
-package com.example.odontogest
+package com.clinident
 
 import io.flutter.embedding.android.FlutterActivity
 

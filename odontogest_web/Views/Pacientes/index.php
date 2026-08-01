@@ -93,9 +93,12 @@
 <div id="modalPaciente" style="display:none;position:fixed;inset:0;z-index:1060;align-items:center;justify-content:center;overflow-y:auto;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);" onclick="document.getElementById('modalPaciente').style.display='none'"></div>
     <div style="position:relative;background:var(--card-bg);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:680px;margin:24px 16px;">
-        <div style="padding:18px 22px;border-bottom:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;">
-            <h5 style="margin:0;font-size:15px;font-weight:700;color:var(--body-text);"><i class="fas fa-user-plus me-2" style="color:#1A56AB;"></i><span id="modalPacTitulo">Nuevo Paciente</span></h5>
-            <button onclick="document.getElementById('modalPaciente').style.display='none'" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:16px;"><i class="fas fa-times"></i></button>
+        <div class="og-modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="og-modal-icon"><i class="fas fa-user-plus"></i></div>
+                <h5 style="margin:0;"><span id="modalPacTitulo">Nuevo Paciente</span></h5>
+            </div>
+            <button class="og-modal-close" onclick="document.getElementById('modalPaciente').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
         <form id="formPaciente" method="POST" action="<?= APP_URL ?>pacientes/crear">
             <input type="hidden" name="csrf_token" value="<?= $csrf ?>">

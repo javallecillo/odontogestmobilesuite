@@ -302,9 +302,12 @@ foreach ($navGroups as $group) {
 <div id="modalCat" style="display:none;position:fixed;inset:0;z-index:1060;align-items:center;justify-content:center;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);" onclick="cerrarModal()"></div>
     <div style="position:relative;background:var(--card-bg);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:440px;margin:16px;">
-        <div style="padding:16px 22px;border-bottom:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;">
-            <h5 id="mCatTitulo" style="margin:0;font-size:15px;font-weight:700;color:var(--body-text);">Agregar</h5>
-            <button onclick="cerrarModal()" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:16px;"><i class="fas fa-times"></i></button>
+        <div class="og-modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="og-modal-icon"><i class="fas fa-list-check"></i></div>
+                <h5 id="mCatTitulo" style="margin:0;">Agregar</h5>
+            </div>
+            <button class="og-modal-close" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
         </div>
         <form id="formCat" onsubmit="submitCatalogo(event)">
             <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
@@ -347,9 +350,12 @@ foreach ($navGroups as $group) {
 <div id="modalProv" style="display:none;position:fixed;inset:0;z-index:1060;align-items:center;justify-content:center;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);" onclick="document.getElementById('modalProv').style.display='none'"></div>
     <div style="position:relative;background:var(--card-bg);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:520px;margin:16px;max-height:92vh;overflow-y:auto;">
-        <div style="padding:16px 22px;border-bottom:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--card-bg);z-index:1;">
-            <h5 id="mProvTitulo" style="margin:0;font-size:15px;font-weight:700;color:var(--body-text);">Proveedor</h5>
-            <button onclick="document.getElementById('modalProv').style.display='none'" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:16px;"><i class="fas fa-times"></i></button>
+        <div class="og-modal-header" style="position:sticky;top:0;z-index:2;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="og-modal-icon"><i class="fas fa-truck"></i></div>
+                <h5 id="mProvTitulo" style="margin:0;">Proveedor</h5>
+            </div>
+            <button class="og-modal-close" onclick="document.getElementById('modalProv').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
         <form id="formProv" onsubmit="submitProveedor(event)">
             <input type="hidden" name="csrf_token" value="<?= $csrf ?>">

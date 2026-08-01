@@ -15,8 +15,9 @@ class FacturacionModel {
         if (!empty($f['fecha_ini'])) { $where[] = 'DATE(f.fecha_emision)>=:fi'; $p[':fi']=$f['fecha_ini']; }
         if (!empty($f['fecha_fin'])) { $where[] = 'DATE(f.fecha_emision)<=:ff'; $p[':ff']=$f['fecha_fin']; }
         if (!empty($f['buscar'])) {
-            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q OR f.numero_factura LIKE :q)";
-            $p[':q'] = '%'.$f['buscar'].'%';
+            $where[] = "(CONCAT(p.nombre,' ',p.apellidos) LIKE :q1 OR f.numero_factura LIKE :q2)";
+            $p[':q1'] = '%'.$f['buscar'].'%';
+            $p[':q2'] = '%'.$f['buscar'].'%';
         }
         $w  = implode(' AND ', $where);
         $st = $db->prepare("
@@ -27,10 +28,9 @@ class FacturacionModel {
                    CONCAT(p.nombre,' ',p.apellidos) AS paciente
             FROM factura f JOIN pacientes p ON p.id_paciente=f.id_paciente
             WHERE $w ORDER BY f.id_factura DESC
-            LIMIT 15 OFFSET :off
+            LIMIT 15 OFFSET {$offset}
         ");
         foreach ($p as $k => $v) $st->bindValue($k, $v);
-        $st->bindValue(':off', $offset, PDO::PARAM_INT);
         $st->execute();
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -42,8 +42,9 @@ class FacturacionModel {
         if (!empty($f['fecha_ini'])) { $where[]='DATE(f.fecha_emision)>=:fi'; $p[':fi']=$f['fecha_ini']; }
         if (!empty($f['fecha_fin'])) { $where[]='DATE(f.fecha_emision)<=:ff'; $p[':ff']=$f['fecha_fin']; }
         if (!empty($f['buscar']))    {
-            $where[]="(CONCAT(p.nombre,' ',p.apellidos) LIKE :q OR f.numero_factura LIKE :q)";
-            $p[':q']='%'.$f['buscar'].'%';
+            $where[]="(CONCAT(p.nombre,' ',p.apellidos) LIKE :q1 OR f.numero_factura LIKE :q2)";
+            $p[':q1']='%'.$f['buscar'].'%';
+            $p[':q2']='%'.$f['buscar'].'%';
         }
         $w  = implode(' AND ', $where);
         $st = $db->prepare("SELECT COUNT(*) FROM factura f JOIN pacientes p ON p.id_paciente=f.id_paciente WHERE $w");

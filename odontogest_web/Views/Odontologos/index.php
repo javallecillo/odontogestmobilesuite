@@ -91,15 +91,18 @@ foreach([
 <!-- ── Modal Odontólogo ─────────────────────────────────────────── -->
 <div id="modalOd" style="display:none;position:fixed;inset:0;z-index:1050;align-items:center;justify-content:center;">
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);" onclick="cerrarModalOd()"></div>
-    <div style="position:relative;background:var(--card-bg);border-radius:16px;padding:28px 32px;width:min(640px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-            <h3 id="odTitulo" style="margin:0;font-size:16px;font-weight:700;color:var(--body-text);">Nuevo Odontólogo</h3>
-            <button onclick="cerrarModalOd()" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:18px;"><i class="fas fa-times"></i></button>
+    <div style="position:relative;background:var(--card-bg);border-radius:16px;overflow:hidden;width:min(640px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+        <div class="og-modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="og-modal-icon"><i class="fas fa-user-doctor"></i></div>
+                <h5 id="odTitulo" style="margin:0;">Nuevo Odontólogo</h5>
+            </div>
+            <button class="og-modal-close" onclick="cerrarModalOd()"><i class="fas fa-times"></i></button>
         </div>
         <form id="formOd" method="POST" action="<?= APP_URL ?>odontologos/crear">
             <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
             <input type="hidden" name="id_odontologo" id="od_id">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div style="padding:20px 28px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                 <div><label class="form-label">Nombre *</label><input type="text" name="nombre" id="od_nom" class="form-control" required></div>
                 <div><label class="form-label">Apellidos *</label><input type="text" name="apellidos" id="od_ape" class="form-control" required></div>
                 <div><label class="form-label">N° Licencia *</label><input type="text" name="numero_licencia" id="od_lic" class="form-control" required></div>
@@ -135,7 +138,7 @@ foreach([
                         <option value="vacaciones">Vacaciones</option>
                     </select></div>
             </div>
-            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+            <div style="padding:14px 28px;border-top:1px solid var(--card-border);display:flex;justify-content:flex-end;gap:10px;">
                 <button type="button" class="btn-og-secondary" onclick="cerrarModalOd()">Cancelar</button>
                 <button type="submit" class="btn-og-primary"><i class="fas fa-save me-1"></i>Guardar</button>
             </div>

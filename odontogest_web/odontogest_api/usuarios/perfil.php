@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $db   = getDB();
         $stmt = $db->prepare("
             SELECT u.id_usuario, u.nombre_completo, u.usuario, u.correo,
-                   COALESCE(u.telefono, u.telefono_celular, '') AS telefono,
+                   COALESCE(u.telefono, '') AS telefono,
                    u.foto_perfil,
                    r.nombre AS rol
             FROM usuarios u
@@ -69,10 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     }
 
     if (!empty($body['telefono'])) {
-        // Guardar en la columna que exista (telefono o telefono_celular)
-        $cols = $db->query("SHOW COLUMNS FROM usuarios LIKE 'telefono'")->fetchAll();
-        $colName = count($cols) ? 'telefono' : 'telefono_celular';
-        $sets[]               = "$colName = :telefono";
+        $sets[]               = "telefono = :telefono";
         $params[':telefono']  = trim($body['telefono']);
     }
 

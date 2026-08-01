@@ -1,0 +1,21 @@
+# ── OdontoGest API — Apache config ───────────────────────────
+# Requerido para que PHP reciba el header Authorization: Bearer <token>
+
+RewriteEngine On
+
+# ── CORS — se aplica a TODAS las respuestas desde Apache ─────
+Header always set Access-Control-Allow-Origin  "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+Header always set Access-Control-Max-Age       "86400"
+
+# Responder el preflight OPTIONS sin llegar a PHP
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ - [R=204,L]
+
+# Pasar Authorization header a PHP (XAMPP lo bloquea por defecto)
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+# No mostrar listado de archivos
+Options -Indexes

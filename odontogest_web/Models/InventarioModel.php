@@ -15,15 +15,14 @@ class InventarioModel {
                         ELSE 'ok' END AS nivel_stock,
                    pr.proveedor AS proveedor
             FROM producto p LEFT JOIN proveedores pr ON pr.id_proveedor=p.id_proveedor
-            WHERE $w ORDER BY p.nombre LIMIT 15 OFFSET :off
+            WHERE $w ORDER BY p.nombre LIMIT 15 OFFSET {$offset}
         ");
         foreach ($p as $k=>$v) $st->bindValue($k,$v);
-        $st->bindValue(':off',$offset,PDO::PARAM_INT);
         $st->execute();
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
     public static function total(array $f): int {
-        $db=$Conexion=Conexion::getInstance(); $where=['1=1']; $p=[];
+        $db=Conexion::getInstance(); $where=['1=1']; $p=[];
         if (!empty($f['buscar'])) { $where[]='nombre LIKE :q'; $p[':q']='%'.$f['buscar'].'%'; }
         if (!empty($f['estado'])) { $where[]='estado=:est';    $p[':est']=$f['estado']; }
         $st=$db->prepare("SELECT COUNT(*) FROM producto WHERE ".implode(' AND ',$where));
@@ -120,7 +119,8 @@ class InventarioModel {
         if ($tipo==='entrada')  $db->prepare("UPDATE producto SET stock=stock+:c WHERE id_producto=:id")->execute([':c'=>$cantidad,':id'=>$id]);
         elseif($tipo==='salida') $db->prepare("UPDATE producto SET stock=GREATEST(0,stock-:c) WHERE id_producto=:id")->execute([':c'=>$cantidad,':id'=>$id]);
         else                     $db->prepare("UPDATE producto SET stock=GREATEST(0,:c) WHERE id_producto=:id")->execute([':c'=>$cantidad,':id'=>$id]);
-        $stk=(int)$db->query("SELECT stock FROM producto WHERE id_producto=$id")->fetchColumn();
+        $stk_st=$db->prepare("SELECT stock FROM producto WHERE id_producto=:id");
+        $stk_st->execute([":id"=>$id]); $stk=(int)$stk_st->fetchColumn();
         $est=$stk===0?'agotado':'activo';
         $db->prepare("UPDATE producto SET estado=:e WHERE id_producto=:id")->execute([':e'=>$est,':id'=>$id]);
     }

@@ -2,7 +2,7 @@ class AppStrings {
   AppStrings._();
 
   static const String appName    = 'OdontoGest';
-  static const String clinicName = 'Clínica Dental OrtoNova';
+  static const String clinicName = 'Clínica Dental Ortonova';
   static const String subtitle   = 'Sistema de Gestión Odontológica';
   static const String version    = 'OdontoGest Mobile Suite — Versión 1.0.0';
 

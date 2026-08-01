@@ -7,12 +7,19 @@ require_once __DIR__ . '/Response.php';
 
 const TOKEN_TTL = 86400; // 24 horas en segundos
 
+if (!function_exists('str_starts_with')) {
+    function str_starts_with(string $haystack, string $needle): bool {
+        return $needle === '' || strpos($haystack, $needle) === 0;
+    }
+}
+
 function getAuthUser(): array {
-    // XAMPP/Apache bloquea Authorization por defecto.
-    // El .htaccess lo re-expone como HTTP_AUTHORIZATION o REDIRECT_HTTP_AUTHORIZATION.
+    // El header Authorization puede venir de PHP-FPM, Apache o un proxy.
     $header = '';
     if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
         $header = $_SERVER['HTTP_AUTHORIZATION'];
+    } elseif (!empty($_SERVER['Authorization'])) {
+        $header = $_SERVER['Authorization'];
     } elseif (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
         $header = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
     } elseif (function_exists('apache_request_headers')) {
@@ -56,13 +63,3 @@ function getAuthUser(): array {
     ];
 }
 
-// Aplica CORS y sale si es preflight OPTIONS
-function corsHeaders(): void {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        http_response_code(204);
-        exit;
-    }
-}

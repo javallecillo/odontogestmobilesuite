@@ -24,8 +24,9 @@ class ConfiguracionController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: '.APP_URL.'configuracion'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'configuracion?error=csrf'); exit;
+        }
         $tipo = $_POST['tipo'] ?? 'sistema';
 
         if ($tipo === 'sistema') {
@@ -56,8 +57,9 @@ class ConfiguracionController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'configuracion?error=csrf'); exit;
+        }
         $catalogo = $_POST['catalogo'] ?? '';
         $data     = $_POST;
 
@@ -83,8 +85,9 @@ class ConfiguracionController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'configuracion?error=csrf'); exit;
+        }
         $catalogo = $_POST['catalogo'] ?? '';
         $id       = (int)($_POST['id'] ?? 0);
 

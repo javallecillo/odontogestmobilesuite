@@ -39,8 +39,9 @@ class RolesController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'roles'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'roles?error=csrf'); exit;
+        }
         $nombre      = trim($_POST['nombre']      ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
         $permisos    = $_POST['permisos'] ?? [];
@@ -55,8 +56,9 @@ class RolesController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'roles'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'roles?error=csrf'); exit;
+        }
         $id          = (int)($_POST['id_rol'] ?? 0);
         $nombre      = trim($_POST['nombre']      ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
@@ -72,8 +74,9 @@ class RolesController {
         Auth::requireLogin();
         Auth::requireRol('Administrador');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_URL . 'roles'); exit; }
-        Csrf::verify($_POST['csrf_token'] ?? '');
-
+        if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
+            header('Location: ' . APP_URL . 'roles?error=csrf'); exit;
+        }
         $id = (int)($_POST['id_rol'] ?? 0);
         RolesModel::eliminar($id);
         AuditoriaModel::registrar('seguridad', 'eliminar', "Rol #{$id}");
