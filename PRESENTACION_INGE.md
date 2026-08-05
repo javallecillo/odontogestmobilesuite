@@ -1,7 +1,9 @@
 # OdontoGest — Documento de Presentación
 **Proyecto Final · Desarrollo Móvil II**  
 Universidad / Carrera: Ingeniería en Sistemas  
-Estudiante: Jhair Ríos · 2025
+Estudiantes: Jorge Arturo Vallecillo (Coordinador)
+             Lucas Rodrigo Bautista 
+ 2 Trimestre 2026
 
 ---
 

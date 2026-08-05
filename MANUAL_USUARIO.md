@@ -1,359 +1,372 @@
 # Manual de Usuario — OdontoGest
-**Sistema de Gestión para Clínica Odontológica**  
-Versión 1.0 · 2025
+
+**Sistema de Gestión para Clínicas Dentales**
+Clínica Dental OrtoNova — Honduras
 
 ---
 
-## Tabla de contenido
+## Tabla de contenidos
 
 1. [Introducción](#1-introducción)
-2. [Requisitos del sistema](#2-requisitos-del-sistema)
-3. [Instalación y configuración](#3-instalación-y-configuración)
-4. [Acceso al sistema web](#4-acceso-al-sistema-web)
-5. [Módulos de la aplicación web](#5-módulos-de-la-aplicación-web)
-   - 5.1 Dashboard
-   - 5.2 Pacientes
-   - 5.3 Expedientes
-   - 5.4 Agenda / Citas
-   - 5.5 Odontólogos
-   - 5.6 Servicios
-   - 5.7 Facturación
-   - 5.8 Inventario
-   - 5.9 Reportes
-   - 5.10 Usuarios y Roles
-   - 5.11 Configuración
-   - 5.12 Auditoría
-6. [Aplicación móvil Flutter (odontólogos)](#6-aplicación-móvil-flutter)
-   - 6.1 Requisitos y acceso
-   - 6.2 Agenda del odontólogo
-   - 6.3 Expediente del paciente
-   - 6.4 Odontograma
-   - 6.5 Recetas
-   - 6.6 Tratamientos
-   - 6.7 Fotos del expediente
-   - 6.8 Nueva cita
-7. [Roles y permisos](#7-roles-y-permisos)
-8. [Preguntas frecuentes](#8-preguntas-frecuentes)
+2. [Componentes del sistema](#2-componentes-del-sistema)
+3. [Roles de usuario](#3-roles-de-usuario)
+4. [Acceso al sistema](#4-acceso-al-sistema)
+5. [Panel principal (Dashboard)](#5-panel-principal-dashboard)
+6. [Módulo de Agenda y Citas](#6-módulo-de-agenda-y-citas)
+7. [Módulo de Pacientes](#7-módulo-de-pacientes)
+8. [Módulo de Expedientes Clínicos](#8-módulo-de-expedientes-clínicos)
+9. [Módulo de Facturación](#9-módulo-de-facturación)
+10. [Módulo de Inventario](#10-módulo-de-inventario)
+11. [Administración: Usuarios, Roles y Odontólogos](#11-administración-usuarios-roles-y-odontólogos)
+12. [Auditoría del sistema](#12-auditoría-del-sistema)
+13. [Reportes](#13-reportes)
+14. [Notificaciones](#14-notificaciones)
+15. [Preguntas frecuentes](#15-preguntas-frecuentes)
+16. [Glosario](#16-glosario)
 
 ---
 
 ## 1. Introducción
 
-OdontoGest es un sistema de gestión integral para clínicas odontológicas compuesto por dos componentes:
+Este manual explica a **cómo usar** OdontoGest en el día a día de la clínica: desde iniciar sesión, hasta agendar una cita, actualizar un expediente clínico, emitir una factura o revisar el inventario.
 
-- **Aplicación web** (`odontogest_web`): para recepcionistas y administradores. Gestiona pacientes, agenda, facturación, inventario, reportes y configuración del sistema.
-- **Aplicación Flutter** (`odontogest`): para odontólogos. Permite consultar la agenda del día, gestionar expedientes clínicos, registrar odontogramas, recetas, tratamientos y fotografías de los pacientes.
+Está dirigido a todo el personal que interactúa con el sistema:
 
-Ambas aplicaciones comparten la misma base de datos MySQL y se comunican a través de una REST API (`odontogest_api`).
+- **Recepción** — agenda, pacientes, facturación.
+- **Odontólogos y asistentes** — agenda propia, expedientes clínicos, odontograma.
+- **Administración** — usuarios, roles, inventario, reportes y auditoría.
+
+> 📌 Si se busca información técnica sobre la arquitectura, instalación o estructura del código, consulta el **README.md** del repositorio. Este manual se enfoca en el **uso funcional** del sistema.
 
 ---
 
-## 2. Requisitos del sistema
+## 2. Componentes del sistema
 
-| Componente | Requerimiento |
+OdontoGest tiene dos formas de acceso, según el tipo de tarea:
+
+| Componente | ¿Quién lo usa? | ¿Para qué? |
+|---|---|---|
+| **App móvil** (Android / iOS / escritorio) | Odontólogos y asistentes | Agenda diaria, expedientes clínicos, odontograma, recetas, fotos, notificaciones — ideal para usar en el consultorio. |
+| **Panel web** (navegador) | Administración y recepción | Gestión completa: usuarios, roles, facturación, inventario, reportes, auditoría y configuración general. |
+
+Ambos se conectan a la **misma base de datos**, por lo que cualquier cambio hecho en uno se refleja de inmediato en el otro (por ejemplo, una cita creada en el panel web aparece al instante en la agenda del odontólogo en su celular).
+
+---
+
+## 3. Roles de usuario
+
+El acceso a cada módulo depende del **rol** asignado al usuario:
+
+| Rol | Qué puede hacer |
 |---|---|
-| Servidor web | XAMPP 8.x (Apache + PHP 8.2+) |
-| Base de datos | MySQL 8.0 / MariaDB 10.6+ |
-| PHP | 8.2 o superior |
-| Flutter | SDK 3.9.2 o superior |
-| Navegador (app web) | Chrome, Edge o Firefox actualizados |
-| Red | Todos los dispositivos en la misma red local |
+| **Administrador** | Acceso total al sistema: usuarios, roles, configuración, auditoría, reportes y todos los módulos operativos. |
+| **Odontólogo** | Ve su propia agenda, gestiona expedientes clínicos, odontograma, recetas y tratamientos de sus pacientes. |
+| **Recepcionista** | Gestiona agenda general, pacientes y facturación. |
+| **Asistente** | Apoyo operativo, con permisos configurables por un administrador según las necesidades de la clínica. |
+
+> Un **Administrador** puede ajustar qué puede ver o hacer cada rol desde **Administración → Roles → Permisos** (ver [sección 11](#11-administración-usuarios-roles-y-odontólogos)).
 
 ---
 
-## 3. Instalación y configuración
+## 4. Acceso al sistema
 
-### 3.1 Base de datos
+### 4.1 Panel web
 
-1. Iniciar **XAMPP** → activar **Apache** y **MySQL**.
-2. Abrir **phpMyAdmin** (`http://localhost/phpmyadmin`).
-3. Crear base de datos: `odonto_gest`.
-4. Importar el archivo `BD_OdontoGest/odonto_gest_v3.sql`.
-5. Importar `BD_OdontoGest/stored_procedures.sql` (stored procedures).
+1. Abre el navegador y entra a la URL de la clínica (por ejemplo, `http://localhost/odontogest_web/`).
+2. Ingresa tu **usuario** y **contraseña**.
+3. Haz clic en **Iniciar Sesión**.
 
-### 3.2 Aplicación web
+Si tu cuenta está **inactiva** o **bloqueada**, el sistema te lo indicará; contacta a un administrador.
 
-1. Copiar la carpeta `odontogest_web` a `C:/xampp/htdocs/`.
-2. Abrir `odontogest_web/Config/Define.php` y verificar:
-   ```php
-   define('DB_HOST', 'localhost');
-   define('DB_NAME', 'odonto_gest');
-   define('DB_USER', 'root');
-   define('DB_PASS', '');  // o tu contraseña de MySQL
-   define('APP_URL',  'http://localhost/odontogest_web/');
-   ```
-3. Acceder a `http://localhost/odontogest_web/` en el navegador.
+> 🔒 Por seguridad, después de **5 intentos fallidos** de inicio de sesión, la cuenta queda bloqueada temporalmente durante 5 minutos.
 
-### 3.3 API REST (Flutter)
+### 4.2 App móvil
 
-1. Copiar la carpeta `odontogest_api` a `C:/xampp/htdocs/`.
-2. Verificar que `.htaccess` en la raíz de `odontogest_api` exista (para el header `Authorization`).
-3. La API estará disponible en `http://localhost/odontogest_api/`.
+1. Abre la aplicación OdontoGest en tu dispositivo.
+2. Ingresa tu **usuario** y **contraseña** en la pantalla de bienvenida.
+3. Presiona **Ingresar**.
 
-### 3.4 Aplicación Flutter
+Tu sesión permanece activa hasta que cierres sesión manualmente desde tu perfil o el token expire (24 horas).
 
-1. Abrir `odontogest/lib/core/app_config.dart` y configurar la IP del servidor:
-   ```dart
-   // Si todos están en la misma red:
-   static const String apiBase = 'http://192.168.X.X/odontogest_api';
-   // Si se ejecuta en el mismo equipo:
-   static const String apiBase = 'http://localhost/odontogest_api';
-   ```
-2. Desde la carpeta `odontogest/` ejecutar:
-   ```bash
-   flutter pub get
-   flutter run -d chrome   # Para ejecutar en navegador
-   ```
-3. La app estará disponible en `http://localhost:8080` (por defecto).
+### 4.3 Cerrar sesión
+
+- **Panel web:** menú del avatar (esquina superior derecha) → **Cerrar sesión**.
+- **App móvil:** ícono de salida en la parte superior del Dashboard, o desde **Mi Perfil**.
 
 ---
 
-## 4. Acceso al sistema web
+## 5. Panel principal (Dashboard)
 
-Ir a `http://localhost/odontogest_web/`
+Al iniciar sesión llegas al **Dashboard**, que resume la actividad del día:
 
-| Campo | Valor por defecto |
+- **Citas hoy** — total de citas programadas para la fecha actual.
+- **Pacientes activos** — total de pacientes registrados con estado "activo".
+- **Facturas pendientes** — facturas emitidas aún no cobradas.
+- **Stock bajo** — cantidad de productos por debajo de su nivel mínimo de inventario.
+
+Debajo de los indicadores encontrarás:
+
+- **Citas del día**, con hora, paciente, odontólogo, servicio y estado.
+- **Resumen de citas** por estado (pendientes, confirmadas, atendidas, canceladas).
+- **Últimas facturas** emitidas.
+- **Alertas de inventario** (productos con stock crítico).
+- **Accesos rápidos** a los módulos más usados (nueva cita, nuevo paciente, nueva factura, inventario, pacientes, reportes).
+
+---
+
+## 6. Módulo de Agenda y Citas
+
+### 6.1 Ver la agenda
+
+- **Panel web:** menú lateral → **Agenda**. Puedes filtrar por **fecha**, **estado** de la cita o buscar por **paciente/odontólogo**.
+- **App móvil:** pestaña **Agenda**. Usa los chips de filtro (Todas, Pendientes, Confirmadas, etc.) y el ícono de calendario para cambiar de fecha.
+
+### 6.2 Crear una nueva cita
+
+1. Presiona **Nueva Cita**.
+2. Selecciona **paciente**, **odontólogo** y, opcionalmente, un **servicio**.
+3. Indica **fecha y hora**. El sistema valida automáticamente que el odontólogo no tenga ya una cita en ese horario.
+4. Agrega **notas** si es necesario.
+5. Guarda la cita — quedará con estado **Pendiente**.
+
+> En la app móvil, el flujo es guiado paso a paso: primero eliges odontólogo, luego fecha, luego un horario disponible, y finalmente el paciente.
+
+### 6.3 Cambiar el estado de una cita
+
+Estados posibles: `Pendiente` → `Confirmada` → `En curso` → `Atendida`, o bien `Cancelada` / `No asistió`.
+
+- **Panel web:** botón de intercambio (⇄) en la fila de la cita → elige el nuevo estado → **Guardar cambio**.
+- **App móvil:** toca la cita → **Cambiar estado** → selecciona la opción correspondiente (también puedes marcar asistencia: "Asistió" / "No asistió").
+
+### 6.4 Eliminar una cita
+
+Disponible solo para **Administrador**. Panel web → botón de papelera en la fila de la cita → confirma la eliminación. Esta acción es **permanente**.
+
+---
+
+## 7. Módulo de Pacientes
+
+### 7.1 Buscar y listar pacientes
+
+- **Panel web:** menú **Pacientes**. Usa el buscador (nombre, teléfono, correo o DNI) y el filtro de **estado** (activo/inactivo/fallecido).
+- **App móvil:** pestaña **Pacientes** o **Buscar Paciente** desde el Dashboard. La búsqueda filtra en tiempo real por nombre, número de expediente o teléfono.
+
+### 7.2 Registrar un nuevo paciente
+
+1. Botón **Nuevo Paciente**.
+2. Completa los datos: nombre, apellidos, DNI/pasaporte, fecha de nacimiento, sexo, teléfono, correo, dirección, estado civil, ocupación, contacto de emergencia y responsable de pago.
+3. Guarda — el paciente queda con estado **Activo** por defecto.
+
+### 7.3 Editar o desactivar un paciente
+
+- **Editar:** ícono de lápiz en la fila del paciente → actualiza los datos → **Guardar**.
+- **Desactivar:** ícono de "usuario tachado" → confirma. El paciente no se elimina de la base de datos, solo pasa a estado **Inactivo** (esto preserva su historial clínico).
+
+---
+
+## 8. Módulo de Expedientes Clínicos
+
+Este es el corazón clínico del sistema. Cada paciente tiene un expediente con varias secciones (pestañas):
+
+### 8.1 Historial
+
+Lista cronológica de todas las citas del paciente, con odontólogo, servicio, estado y notas.
+
+### 8.2 Datos Clínicos
+
+- **Tipo de sangre.**
+- **Antecedentes médicos** y **observaciones generales** (texto libre).
+- **Alergias**, **enfermedades sistémicas** y **medicamentos actuales**: selecciona de un catálogo con casillas de verificación; para medicamentos puedes indicar la **dosis**.
+
+Guarda los cambios con el botón **Guardar Datos Clínicos**.
+
+### 8.3 Odontograma
+
+Representación visual de las 32 piezas dentales (notación FDI), donde puedes:
+
+1. Elegir una **condición** en la barra de herramientas (Sano, Caries, Extracción, Corona, Obturación, Ausente, Implante, Fractura, Bracket).
+2. Tocar la pieza dental correspondiente para aplicar la condición.
+3. Un diente puede tener **varias condiciones a la vez** (por ejemplo, corona + bracket), excepto extracción/ausente, que reemplazan cualquier otra condición.
+4. Presiona **Guardar** para almacenar los cambios (visible cuando hay modificaciones pendientes).
+
+Cada pieza se colorea según su condición, y puedes tocarla nuevamente para ver el detalle o limpiar sus condiciones.
+
+### 8.4 Recetas (app móvil)
+
+1. Botón **Nueva Receta**.
+2. Completa medicamento, dosis, frecuencia, duración y notas.
+3. Guarda — la receta queda asociada al expediente con fecha y odontólogo.
+
+### 8.5 Tratamientos
+
+1. Botón **Nuevo Tratamiento**.
+2. Selecciona el tipo de tratamiento del catálogo (limpieza, extracción, ortodoncia, endodoncia, etc.) — el costo base se autocompleta si está definido.
+3. Ajusta el costo si es necesario y agrega observaciones.
+4. Guarda — el tratamiento queda registrado con estado (en proceso, completado, suspendido, cancelado).
+
+### 8.6 Fotos clínicas (app móvil)
+
+1. Botón **Agregar foto**.
+2. Elige **Tomar foto** o **Elegir de galería**.
+3. Agrega una descripción opcional (por ejemplo, "Antes del tratamiento").
+4. La foto se sube y queda disponible en la galería del expediente.
+
+### 8.7 Facturas del paciente
+
+Desde la pestaña **Facturas** del expediente puedes consultar todas las facturas emitidas a ese paciente, con su estado y monto.
+
+---
+
+## 9. Módulo de Facturación
+
+### 9.1 Ver facturas
+
+Panel web → **Facturación**. Filtra por **estado** (emitida, pagada, anulada), **rango de fechas** o busca por paciente/número de factura. En la parte superior verás indicadores: emitidas, pagadas, ingresos del mes y monto pendiente.
+
+### 9.2 Emitir una nueva factura
+
+1. Botón **Nueva Factura**.
+2. Busca y selecciona el **paciente**.
+3. Elige el **método de pago** (efectivo, tarjeta, transferencia) y la **tasa de ISV** (0%, 15% o 18%, según lo que aplique en Honduras).
+4. Agrega los **ítems** de la factura: descripción, cantidad y precio — se calculan automáticamente subtotal, ISV y total.
+5. Agrega notas si es necesario y presiona **Emitir Factura**.
+
+### 9.3 Marcar como pagada o anular
+
+- **Marcar pagada:** ícono de check (✓) en la fila de la factura → confirma.
+- **Anular:** ícono de prohibido (⊘) → indica el **motivo** de anulación → confirma. Solo un **Administrador** puede anular facturas.
+
+> Las facturas anuladas no se eliminan; quedan registradas con estado "Anulada" y su motivo, para mantener la trazabilidad fiscal.
+
+---
+
+## 10. Módulo de Inventario
+
+### 10.1 Ver productos
+
+Panel web → **Inventario**, o pestaña **Inventario** en la app móvil. Se muestran indicadores de total de productos, activos, stock crítico y agotados. Puedes buscar por nombre y filtrar por estado.
+
+Cada producto muestra su **nivel de stock** con un código de color:
+- 🟢 **OK** — stock saludable.
+- 🟡 **Bajo** — cerca del mínimo.
+- 🔴 **Crítico / Agotado** — requiere reposición urgente.
+
+### 10.2 Registrar un nuevo producto
+
+1. Botón **Nuevo Producto**.
+2. Completa nombre, proveedor, unidad de medida, stock actual, stock mínimo, precios de costo/venta y tasa de impuesto.
+3. Guarda.
+
+### 10.3 Ajustar stock
+
+1. Ícono de cajas en la fila del producto → **Ajustar stock**.
+2. Elige el tipo de movimiento: **Entrada** (+), **Salida** (–) o **Ajuste directo**.
+3. Indica la **cantidad** y el **motivo** (por ejemplo, "Compra a proveedor" o "Uso en tratamiento").
+4. Aplica el ajuste — el stock y el estado del producto (activo/agotado) se actualizan automáticamente.
+
+### 10.4 Alertas de stock
+
+El panel muestra un listado de **productos con stock bajo o crítico**, ordenado por urgencia, para facilitar la reposición oportuna.
+
+---
+
+## 11. Administración: Usuarios, Roles y Odontólogos
+
+*(Disponible solo para el rol Administrador)*
+
+### 11.1 Gestión de usuarios
+
+Panel web → **Administración → Usuarios**.
+
+- **Crear usuario:** botón **Nuevo usuario** → nombre completo, nombre de usuario, correo, teléfono, rol y contraseña inicial.
+- **Editar:** ícono de lápiz → actualiza datos y rol.
+- **Activar/Desactivar:** ícono correspondiente → confirma (no puedes desactivar tu propia cuenta).
+- **Resetear contraseña:** ícono de llave → define una nueva contraseña temporal para el usuario.
+
+### 11.2 Roles y permisos
+
+Panel web → **Administración → Roles**.
+
+- **Crear rol:** botón **Nuevo Rol** → nombre y descripción.
+- **Configurar permisos:** botón **Permisos** en la tarjeta del rol → activa o desactiva permisos agrupados por módulo (agenda, expedientes, facturación, inventario, etc.). Puedes seleccionar/quitar todos los permisos de un módulo con el checkbox "Todos".
+- Guarda los cambios con **Guardar Permisos**.
+
+### 11.3 Odontólogos
+
+Panel web → **Administración → Odontólogos**.
+
+1. Botón **Nuevo Odontólogo**.
+2. Completa nombre, apellidos, número de licencia, especialidad, cargo, DNI, teléfono, correo y, opcionalmente, vincula una cuenta de usuario existente.
+3. Guarda. El odontólogo aparecerá disponible al agendar citas.
+4. Puedes **activar/desactivar** un odontólogo (por ejemplo, durante vacaciones) desde el ícono correspondiente.
+
+---
+
+## 12. Auditoría del sistema
+
+*(Disponible solo para el rol Administrador)*
+
+Panel web → **Administración → Auditoría**. Aquí se registra automáticamente cada acción relevante del sistema: creaciones, ediciones, eliminaciones, inicios y cierres de sesión, y anulaciones.
+
+- **Filtros disponibles:** usuario, módulo, tipo de acción, dirección IP y rango de fechas.
+- **Ver detalle:** ícono de lupa en cada fila para ver la información completa del evento (usuario, rol, descripción, IP, navegador).
+- **Exportar:** botón **Exportar CSV** para descargar el log filtrado y compartirlo o archivarlo.
+
+---
+
+## 13. Reportes
+
+Panel web → **Reportes**. Disponibles tres reportes principales:
+
+| Reporte | Qué muestra |
 |---|---|
-| Usuario | `admin` |
-| Contraseña | (la configurada en la BD) |
+| **Reporte de Citas** | Total de citas, atendidas y canceladas por día, con porcentaje de efectividad, dentro de un rango de fechas. |
+| **Reporte de Ingresos** | Facturación por día: subtotal, ISV y total recaudado, dentro de un rango de fechas. |
+| **Reporte de Inventario** | Estado actual de todos los productos: stock, mínimo, precios y estado. |
 
-> La contraseña se almacena como hash SHA-256. Para generar un hash: `http://localhost/odontogest_api/tools/generar_hash.php?pass=tuPassword`
-
----
-
-## 5. Módulos de la aplicación web
-
-### 5.1 Dashboard
-
-Muestra métricas en tiempo real:
-- Total de pacientes, citas del día, ingresos del mes.
-- Citas de hoy con estado y paciente.
-- Alertas de stock crítico en inventario.
-- Accesos rápidos a los módulos principales.
-
-### 5.2 Pacientes
-
-**Funciones disponibles:**
-- Listar pacientes con búsqueda por nombre, teléfono, correo o DNI.
-- Filtrar por estado (activo / inactivo / fallecido).
-- **Registrar nuevo paciente**: nombre, apellidos, DNI, RTN, fecha de nacimiento, sexo, estado civil, ocupación, teléfonos de emergencia, contacto de emergencia, responsable de pago, correo y dirección.
-- **Editar** datos de un paciente existente.
-- **Desactivar** paciente (no se elimina de la BD).
-
-> **Nota:** Todos los campos del formulario corresponden exactamente a las columnas de la tabla `pacientes` en la base de datos.
-
-### 5.3 Expedientes
-
-Acceso al historial clínico de cada paciente:
-- Resumen general: datos del paciente, grupo sanguíneo, alergias, enfermedades previas, observaciones.
-- **Odontograma**: visualización de las condiciones de cada pieza dental.
-- **Historial de tratamientos**: lista de tratamientos registrados con estado y costo.
-- **Recetas emitidas**: medicamentos recetados con dosis y duración.
-- **Registro de imágenes** del paciente.
-
-### 5.4 Agenda / Citas
-
-- Vista de citas por fecha con filtros por estado.
-- **Nueva cita**: seleccionar paciente, odontólogo, fecha y hora, servicio (opcional) y notas.
-- Cambiar estado de una cita: Pendiente → Confirmada → En curso → Atendida / Cancelada.
-- Registrar asistencia del paciente.
-
-> El sistema valida que no existan dos citas para el mismo odontólogo en el mismo horario.
-
-### 5.5 Odontólogos
-
-- Registrar odontólogos con: nombre, apellidos, número de licencia, DNI, especialidad, cargo, usuario del sistema, teléfono, correo, fecha de nacimiento y estado.
-- Editar datos de odontólogos existentes.
-- Activar / desactivar / marcar como en vacaciones.
-
-### 5.6 Servicios
-
-- Catálogo de servicios odontológicos con nombre, descripción, precio base y estado.
-- Crear y editar servicios.
-- Los servicios se usan al registrar citas y en la facturación.
-
-### 5.7 Facturación
-
-- Lista de facturas emitidas con totales y estado de pago.
-- **Nueva factura**:
-  1. Buscar paciente.
-  2. Agregar ítems (servicio, descripción, cantidad, precio).
-  3. Seleccionar tasa de ISV (0%, 15% o 18%).
-  4. Guardar factura (calcula subtotal, ISV y total automáticamente).
-
-### 5.8 Inventario
-
-- Lista de productos con stock actual, mínimo y nivel de alerta visual.
-- **Nuevo producto**: nombre, proveedor, unidad de medida, stock, stock mínimo, precio costo, precio venta, tasa de impuesto, descripción y estado.
-- **Ajustar stock**: entrada, salida o ajuste directo con motivo.
-- Alertas automáticas de stock crítico.
-- **Reporte de inventario** imprimible con todos los productos.
-
-### 5.9 Reportes
-
-Reportes disponibles (imprimibles en PDF desde el navegador):
-- **Inventario**: estado actual del stock con precios.
-- **Citas**: listado de citas por rango de fechas y estado.
-- **Ingresos**: resumen de facturación por período.
-
-Para imprimir: botón "Imprimir / PDF" en cada reporte → `Ctrl+P` → guardar como PDF.
-
-### 5.10 Usuarios y Roles
-
-**Usuarios:**
-- Lista de usuarios del sistema con su rol.
-- Crear nuevo usuario: nombre completo, usuario, correo, contraseña, rol y estado.
-- Cambiar estado (activo / inactivo).
-
-**Roles:**
-- Lista de roles con sus permisos.
-- El sistema incluye los roles: **Administrador**, **Recepcionista**, **Odontólogo**, **Auxiliar**.
-- Se pueden asignar permisos específicos por módulo a cada rol.
-
-### 5.11 Configuración
-
-Panel de configuración del sistema dividido en secciones:
-- **General**: nombre de la clínica, eslogan, teléfono, correo, dirección, sitio web.
-- **Horario**: días laborales y horas de atención.
-- **Logo**: subir logotipo de la clínica.
-- **Colores**: personalizar colores de la interfaz.
-- **Notificaciones**: configurar alertas automáticas.
-- **Seguridad**: políticas de contraseñas y sesiones.
-- **Pagos**: métodos de pago aceptados.
-- **Respaldo**: exportar configuración.
-
-### 5.12 Auditoría
-
-- Registro completo de todas las acciones realizadas en el sistema.
-- Muestra: fecha y hora, usuario, módulo, acción y detalle.
-- Útil para rastrear cambios y detectar uso indebido.
+Cada reporte permite definir un **rango de fechas** (cuando aplica) e **imprimir / exportar a PDF** usando la opción de impresión del navegador.
 
 ---
 
-## 6. Aplicación móvil Flutter
+## 14. Notificaciones
 
-### 6.1 Requisitos y acceso
+El sistema genera notificaciones automáticas de **citas próximas** (hoy y mañana).
 
-- Abrir la app en el navegador: `http://localhost:8080` (o la IP del servidor si es en red).
-- Iniciar sesión con las credenciales de un usuario con rol **Odontólogo**.
-- La app es un complemento para el trabajo clínico del odontólogo durante la consulta.
+- **Panel web:** ícono de campana en la barra superior — muestra un contador de notificaciones no leídas. Haz clic para desplegar la lista; puedes marcar una o todas como leídas.
+- **App móvil:** ícono de campana en el Dashboard, con el mismo contador. Toca para abrir el listado completo de notificaciones.
 
-### 6.2 Agenda del odontólogo
+---
 
-La pantalla principal muestra las citas del día:
-- Navegar entre fechas con el selector de calendario.
-- Filtrar por estado: todas, pendientes, confirmadas, completadas, canceladas.
-- Cada tarjeta de cita muestra: paciente, hora, servicio y estado actual.
+## 15. Preguntas frecuentes
 
-**Acciones sobre una cita:**
-- Tocar el ícono de estado → menú con opciones: Confirmar, Completar, Cancelar, Asistió, No asistió.
-- Tocar la tarjeta → ir al expediente del paciente.
+**¿Por qué no puedo iniciar sesión?**
+Verifica que el usuario y la contraseña sean correctos. Si tu cuenta está inactiva o bloqueada, contacta a un administrador. Recuerda que tras 5 intentos fallidos hay un bloqueo temporal de 5 minutos.
 
-**Actualizar la lista:** deslizar hacia abajo (pull to refresh).
+**¿Puedo eliminar un paciente por completo?**
+No. Por seguridad e integridad del historial clínico, los pacientes solo se **desactivan**, nunca se eliminan de la base de datos.
 
-### 6.3 Expediente del paciente
+**¿Qué pasa si dos citas se agendan a la misma hora con el mismo odontólogo?**
+El sistema lo impide automáticamente: si el horario ya está ocupado para ese odontólogo, mostrará un error al intentar guardar la cita.
 
-Al entrar al expediente de un paciente se muestran 5 pestañas:
+**¿Cómo corrijo una factura con errores?**
+No se editan facturas emitidas. Debes **anularla** (indicando el motivo) y crear una nueva con los datos correctos.
 
-| Pestaña | Contenido |
+**¿La información se sincroniza entre la app móvil y el panel web?**
+Sí, en tiempo real, porque ambos usan la misma base de datos.
+
+---
+
+## 16. Glosario
+
+| Término | Significado |
 |---|---|
-| Resumen | Datos personales, contadores, alergias y enfermedades |
-| Odontograma | Mapa interactivo de las 32 piezas dentales |
-| Recetas | Lista de medicamentos recetados + botón para nueva receta |
-| Tratamientos | Historial de tratamientos + registrar nuevo |
-| Fotos | Galería de imágenes del expediente + subir nueva foto |
-
-También se puede llegar al expediente desde **Buscar Paciente** en el menú inferior.
-
-### 6.4 Odontograma
-
-- Visualiza las 32 piezas dentales organizadas por cuadrante.
-- Tocar una pieza → ver sus condiciones actuales.
-- Tocar y mantener → agregar o quitar condiciones (caries, corona, bracket, extracción, etc.).
-- Botón **Guardar** → sincroniza con el servidor.
-
-### 6.5 Recetas
-
-- La pestaña muestra todas las recetas emitidas para el paciente.
-- Botón **Nueva Receta** → formulario deslizable desde abajo:
-  - Medicamento (nombre y presentación)
-  - Dosis (ej: 500 mg)
-  - Frecuencia (ej: cada 8 horas)
-  - Duración (ej: 7 días)
-  - Notas adicionales (opcional)
-- Tocar **Guardar Receta** → se guarda en el expediente.
-
-### 6.6 Tratamientos
-
-- Lista de tratamientos realizados con estado (en proceso, completado, suspendido, cancelado) y costo.
-- Botón **Nuevo Tratamiento** → formulario:
-  - Seleccionar tipo de tratamiento (cargado desde la base de datos).
-  - Costo en lempiras (se prellenará con el precio base si está configurado).
-  - Observaciones (opcional).
-
-### 6.7 Fotos del expediente
-
-- Galería en cuadrícula con todas las fotos del expediente.
-- Botón **Agregar foto** → opciones:
-  - **Tomar foto** → abre la cámara del dispositivo.
-  - **Elegir de galería** → abre el selector de archivos.
-- Al seleccionar la imagen se pide una descripción opcional (ej: "Antes del tratamiento").
-- La foto se sube automáticamente al servidor.
-
-### 6.8 Nueva cita
-
-Accesible desde el botón `+` en la pantalla de Agenda. Flujo por pasos:
-
-1. **Seleccionar odontólogo** — lista de odontólogos activos cargada desde la API.
-2. **Seleccionar fecha** — calendario con restricción a los próximos 90 días.
-3. **Seleccionar horario** — slots del día con disponibilidad en tiempo real (los ocupados aparecen deshabilitados).
-4. **Seleccionar paciente** — búsqueda en la lista completa de pacientes activos. Agregar notas opcionales.
-5. **Confirmar cita** — resumen final → botón Confirmar.
-
-La cita queda registrada como "Pendiente" y aparece automáticamente en la agenda del día correspondiente.
+| **Expediente clínico** | Ficha médica completa de un paciente: antecedentes, alergias, odontograma, recetas y tratamientos. |
+| **Odontograma** | Diagrama de las piezas dentales (notación FDI) usado para registrar el estado de cada diente. |
+| **ISV** | Impuesto Sobre Ventas — impuesto aplicado en Honduras a bienes y servicios. |
+| **Slot / Horario disponible** | Espacio de tiempo libre en la agenda de un odontólogo para agendar una cita. |
+| **Auditoría** | Registro histórico de acciones realizadas por los usuarios dentro del sistema. |
+| **KPI** | Indicador clave de desempeño mostrado en el Dashboard (por ejemplo, citas del día). |
 
 ---
 
-## 7. Roles y permisos
-
-| Módulo | Administrador | Recepcionista | Odontólogo | Auxiliar |
-|---|:---:|:---:|:---:|:---:|
-| Dashboard | ✓ | ✓ | ✓ | ✓ |
-| Pacientes (CRUD) | ✓ | ✓ | Solo lectura | — |
-| Expedientes | ✓ | ✓ | ✓ | — |
-| Agenda | ✓ | ✓ | Solo sus citas | — |
-| Odontólogos | ✓ | — | — | — |
-| Servicios | ✓ | ✓ | — | — |
-| Facturación | ✓ | ✓ | — | — |
-| Inventario | ✓ | ✓ | — | ✓ |
-| Reportes | ✓ | — | — | — |
-| Usuarios / Roles | ✓ | — | — | — |
-| Configuración | ✓ | — | — | — |
-| Auditoría | ✓ | — | — | — |
-| App Flutter | — | — | ✓ | — |
-
----
-
-## 8. Preguntas frecuentes
-
-**¿Qué hacer si la app Flutter no conecta con la API?**  
-Verificar que:
-1. XAMPP esté corriendo (Apache y MySQL encendidos).
-2. La URL en `app_config.dart` sea correcta (IP del servidor, no `localhost` si se accede desde otro dispositivo).
-3. El `.htaccess` de `odontogest_api` exista y esté configurado correctamente.
-
-**¿Cómo restablecer la contraseña de un usuario?**  
-En el sistema web: Menú → Usuarios → editar usuario → ingresar nueva contraseña → guardar. El sistema genera el hash automáticamente.
-
-**¿El sistema elimina registros permanentemente?**  
-No. Los pacientes, productos y odontólogos se desactivan (estado = inactivo) pero permanecen en la base de datos para mantener la integridad del historial.
-
-**¿Se pueden imprimir recetas desde la app Flutter?**  
-Actualmente no. La impresión de recetas se gestiona desde la aplicación web a través del módulo de Expedientes.
-
-**¿El odontograma se guarda automáticamente?**  
-No. Es necesario tocar el botón **Guardar** en la pantalla del odontograma para que los cambios queden registrados en el servidor.
-
----
-
-*OdontoGest — Sistema de Gestión Odontológica · Proyecto Final de Desarrollo Móvil*
+*Para dudas técnicas sobre instalación, arquitectura o configuración del servidor, consulta el archivo `README.md` del repositorio.*
