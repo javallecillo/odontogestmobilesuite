@@ -179,7 +179,14 @@ class ExpedientesModel {
         $row = $db->prepare("SELECT id_expediente FROM expedientes WHERE id_paciente=:id");
         $row->execute([':id'=>$idPaciente]);
         $exp = $row->fetchColumn();
-        if (!$exp) return;
+        // Un paciente puede aún no tener expediente clínico. El odontograma
+        // forma parte de ese expediente, por lo que se crea automáticamente
+        // antes de guardar la primera pieza.
+        if (!$exp) {
+            $db->prepare("INSERT INTO expedientes (id_paciente) VALUES (:id)")
+               ->execute([':id' => $idPaciente]);
+            $exp = (int)$db->lastInsertId();
+        }
 
         // Resolver id_odontologo desde la tabla odontologos (FK, no id_usuario)
         $odRow = $db->prepare("SELECT id_odontologo FROM odontologos WHERE id_usuario=:uid LIMIT 1");

@@ -144,7 +144,7 @@ tfoot td{padding:8px 12px;}
             <div class="doc-logo">O</div>
             <div class="doc-brand">
                 <div class="name">OdontoGest</div>
-                <div class="sub">Sistema de Gestión Odontológica<br>Clínica Dental Paz &mdash; Honduras</div>
+                <div class="sub">Sistema de Gestión Odontológica<br>Clínica Dental Ortonova &mdash; Honduras</div>
             </div>
         </div>
         <div class="doc-meta">
@@ -157,7 +157,7 @@ tfoot td{padding:8px 12px;}
 
     <!-- Título -->
     <div class="report-title">
-        <span class="icon">&#x1F4C5;</span>
+        
         <div>
             <h1>Reporte de Citas por Rango de Fechas</h1>
             <div class="period">Período analizado: <?= $fi ?> al <?= $ff ?></div>

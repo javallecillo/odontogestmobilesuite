@@ -2,7 +2,7 @@
 
     <footer class="footer">
         &copy; <?= date('Y') ?> <?= APP_NAME ?> &mdash; Desarrollado por
-        <a href="#" style="color:#1A56AB;font-weight:600;">DeskCod</a>
+        <a href="#" style="color:#1A56AB;font-weight:600;">Jorge Vallecillo y Lucas Bautista</a>
     </footer>
 
     <!-- Bootstrap 5 -->

@@ -171,7 +171,14 @@ foreach($kpiItems as $k): ?>
 function cambiarEstado(id) {
     const opts  = ['pendiente','confirmada','en_curso','atendida','cancelada','no_asistio'];
     const etiq  = ['Pendiente','Confirmada','En curso','Atendida','Cancelada','No asistió'];
-    const icons = ['⏳','✅','🔵','🏁','❌','🚫'];
+    const icons = [
+        'fas fa-clock text-warning',
+        'fas fa-calendar-check text-success',
+        'fas fa-spinner text-primary',
+        'fas fa-check-circle text-success',
+        'fas fa-ban text-danger',
+        'fas fa-user-times text-muted',
+    ];
 
     Swal.fire({
         title: 'Cambiar estado de cita',
@@ -181,7 +188,7 @@ function cambiarEstado(id) {
                      margin-bottom:6px;border-radius:8px;border:1px solid #DDE4EF;
                      background:var(--card-bg);cursor:pointer;font-size:14px;font-weight:500;
                      color:var(--body-text);">
-              <span>${icons[i]}</span>${etiq[i]}
+              <span style="width:16px;text-align:center;"><i class="${icons[i]}"></i></span>${etiq[i]}
             </button>`
         ).join(''),
         showConfirmButton: false,

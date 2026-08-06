@@ -127,7 +127,7 @@ foreach (array_slice(explode(' ', $nombreUsuario), 0, 2) as $parte) {
     <!-- Título página -->
     <div class="header-page-info">
         <div class="header-title"><?= htmlspecialchars($pageTitle ?? 'Panel') ?></div>
-        <div class="header-sub">Clínica Dental Paz — Honduras</div>
+        <div class="header-sub">Clínica Dental Ortonova — Honduras</div>
     </div>
 
     <!-- Buscador centrado -->
