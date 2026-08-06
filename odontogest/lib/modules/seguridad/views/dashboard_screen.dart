@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_theme.dart';
 import '../../../core/session/app_session.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/og_modal.dart';
 import '../../../core/widgets/status_badge.dart';
 import '../../../data/services/dashboard_service.dart';
 import '../../../data/services/notificaciones_service.dart';
+import '../../auth/screens/login_screen.dart';
 import '../../agenda/views/nueva_cita_screen.dart';
 import '../../expedientes/views/buscar_paciente_screen.dart';
 import 'notificaciones_screen.dart';
@@ -58,6 +60,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
       NotificacionesService.listar().then((r) {
         if (mounted) setState(() => _noLeidas = r.noLeidas);
       });
+    });
+  }
+
+  void _confirmLogout() {
+    OgDialog.confirm(
+      context: context,
+      title: 'Cerrar sesión',
+      message: '¿Estás seguro que deseas cerrar sesión?\nDeberás volver a ingresar tus credenciales.',
+      confirmLabel: 'Cerrar sesión',
+      cancelLabel: 'Cancelar',
+      icon: Icons.logout_rounded,
+      destructive: true,
+    ).then((confirmed) {
+      if (!confirmed || !mounted) return;
+      AppSession.instance.clear();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (_) => false,
+      );
     });
   }
 
@@ -143,6 +164,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
           ],
+        ),
+        IconButton(
+          icon: const Icon(Icons.logout_rounded, color: Colors.white),
+          tooltip: 'Cerrar sesión',
+          onPressed: _confirmLogout,
         ),
         const SizedBox(width: 4),
       ],

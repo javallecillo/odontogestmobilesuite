@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_theme.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/gradient_app_bar.dart';
-import '../../../core/widgets/og_modal.dart';
 import '../../../core/session/app_session.dart';
 import '../../../data/services/auth_service.dart';
-import '../../auth/screens/login_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -111,25 +109,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
       content: Text(msg),
       backgroundColor: error ? AppColors.error : AppColors.success,
     ));
-  }
-
-  void _confirmLogout() {
-    OgDialog.confirm(
-      context:      context,
-      title:        'Cerrar sesión',
-      message:      '¿Estás seguro que deseas cerrar sesión?\nDeberás volver a ingresar tus credenciales.',
-      confirmLabel: 'Cerrar sesión',
-      cancelLabel:  'Cancelar',
-      icon:         Icons.logout_rounded,
-      destructive:  true,
-    ).then((confirmed) {
-      if (!confirmed || !mounted) return;
-      AppSession.instance.clear();
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-        (_) => false,
-      );
-    });
   }
 
   @override
@@ -342,27 +321,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // ── Cerrar sesión ──────────────────────────
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: OutlinedButton.icon(
-                        onPressed: _confirmLogout,
-                        icon: const Icon(Icons.logout,
-                            color: AppColors.error, size: 18),
-                        label: Text('Cerrar sesión',
-                            style: AppTypography.buttonSmall(
-                                color: AppColors.error)),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.error),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                         ),

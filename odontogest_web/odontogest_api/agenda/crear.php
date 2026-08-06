@@ -33,13 +33,11 @@ try {
     // Verificar colisión de horario (mismo odontologo, misma hora, no cancelada)
     $chk = $db->prepare("
         SELECT COUNT(*) FROM citas
-        WHERE id_odontologo = :od
-          AND DATE(fecha_cita) = DATE(:fcd)
-          AND TIME(fecha_cita) = TIME(:fct)
+        WHERE id_odontologo = ?
+          AND fecha_cita = ?
           AND estado NOT IN ('cancelada','no_asistio')
     ");
-    @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | agenda/crear.php chk execute params: " . json_encode([':od' => $idOd, ':fcd' => $fecha, ':fct' => $fecha]) . "\n", FILE_APPEND);
-    $chk->execute([':od' => $idOd, ':fcd' => $fecha, ':fct' => $fecha]);
+    $chk->execute([$idOd, $fecha]);
     if ((int)$chk->fetchColumn() > 0) {
         error(409, 'El odontólogo ya tiene una cita en ese horario');
     }
@@ -55,15 +53,13 @@ try {
     ];
     $dia = $mapDia[date('l', strtotime($fechaSola))] ?? 'lunes';
 
-    $hRow = $db->prepare("SELECT id_horario FROM horarios WHERE fecha=:f AND hora=:h LIMIT 1");
-    @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | agenda/crear.php hRow execute params: " . json_encode([':f' => $fechaSola, ':h' => $hora . ':00']) . "\n", FILE_APPEND);
-    $hRow->execute([':f' => $fechaSola, ':h' => $hora . ':00']);
+    $hRow = $db->prepare('SELECT id_horario FROM horarios WHERE fecha = ? AND hora = ? LIMIT 1');
+    $hRow->execute([$fechaSola, $hora . ':00']);
     $idHorario = $hRow->fetchColumn();
 
     if (!$idHorario) {
-          @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | agenda/crear.php insert horario params: " . json_encode([':d' => $dia, ':h' => $hora . ':00', ':f' => $fechaSola]) . "\n", FILE_APPEND);
-          $db->prepare("INSERT INTO horarios (dia,hora,duracion_min,fecha,disponible) VALUES (:d,:h,30,:f,1)")
-              ->execute([':d' => $dia, ':h' => $hora . ':00', ':f' => $fechaSola]);
+        $db->prepare('INSERT INTO horarios (dia, hora, duracion_min, fecha, disponible) VALUES (?, ?, 30, ?, 1)')
+            ->execute([$dia, $hora . ':00', $fechaSola]);
         $idHorario = (int)$db->lastInsertId();
     }
 
@@ -72,23 +68,15 @@ try {
         INSERT INTO citas
             (id_paciente, id_odontologo, id_horario, id_servicio, fecha_cita, notas, estado, asistencia)
         VALUES
-            (:pac, :od, :hor, :srv, :fc, :notas, 'pendiente', 'pendiente')
+            (?, ?, ?, ?, ?, ?, 'pendiente', 'pendiente')
     ");
-    @file_put_contents(__DIR__ . '/../debug.log', date('c') . " | agenda/crear.php insert cita params: " . json_encode([
-        ':pac'   => $idPac,
-        ':od'    => $idOd,
-        ':hor'   => $idHorario,
-        ':srv'   => $idServ,
-        ':fc'    => $fecha,
-        ':notas' => $notas ?: null,
-    ]) . "\n", FILE_APPEND);
     $ins->execute([
-        ':pac'   => $idPac,
-        ':od'    => $idOd,
-        ':hor'   => $idHorario,
-        ':srv'   => $idServ,
-        ':fc'    => $fecha,
-        ':notas' => $notas ?: null,
+        $idPac,
+        $idOd,
+        $idHorario,
+        $idServ,
+        $fecha,
+        $notas ?: null,
     ]);
 
     ok([
