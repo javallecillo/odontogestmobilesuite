@@ -7,18 +7,18 @@
 /* ── Raíz ─────────────────────────────────────────────────────────── */
 [data-theme="dark"],
 [data-theme="dark"] body {
-    background-color: #0F172A !important;
+    background-color: #17252A !important;
     color: #E2E8F0 !important;
     color-scheme: dark;
 }
 
 /* ── Layout principal ─────────────────────────────────────────────── */
-[data-theme="dark"] .main-content { background: #0F172A !important; }
+[data-theme="dark"] .main-content { background: #17252A !important; }
 
 /* ── TOP HEADER ───────────────────────────────────────────────────── */
 [data-theme="dark"] .top-header {
-    background: #1E293B !important;
-    border-bottom-color: #334155 !important;
+    background: #203B3C !important;
+    border-bottom-color: #315B5A !important;
 }
 [data-theme="dark"] .header-page-info .header-title,
 [data-theme="dark"] .header-title { color: #E2E8F0 !important; }
@@ -42,20 +42,20 @@
     color: #94A3B8 !important;
 }
 [data-theme="dark"] .btn-notificaciones:hover {
-    background: #1A3057 !important;
-    border-color: #1A56AB !important;
-    color: #B2DAFF !important;
+    background: #264D4D !important;
+    border-color: #2B7A78 !important;
+    color: #7ED9C3 !important;
 }
 
 [data-theme="dark"] .header-avatar {
-    background: #1A3057 !important;
-    color: #B2DAFF !important;
+    background: #264D4D !important;
+    color: #7ED9C3 !important;
 }
 
 /* ── SIDEBAR ──────────────────────────────────────────────────────── */
-[data-theme="dark"] .sidebar      { background: #080F1E !important; }
-[data-theme="dark"] .sidebar-header { background: #0C1630 !important; border-color: rgba(255,255,255,.06) !important; }
-[data-theme="dark"] .sidebar-logo-icon { background: #1A3E7E !important; }
+[data-theme="dark"] .sidebar      { background: #17252A !important; }
+[data-theme="dark"] .sidebar-header { background: #203B3C !important; border-color: rgba(255,255,255,.06) !important; }
+[data-theme="dark"] .sidebar-logo-icon { background: #2B7A78 !important; }
 [data-theme="dark"] .sidebar-user { border-color: rgba(255,255,255,.06) !important; }
 [data-theme="dark"] .sidebar-separator { background: rgba(255,255,255,.06) !important; }
 

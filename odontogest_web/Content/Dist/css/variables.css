@@ -1,18 +1,18 @@
 /* ============================================================
    VARIABLES GLOBALES — OdontoGest Panel Web
-   Paleta Figma: #1A56AB (azul) / #112C5C (navy) / #F0F3F8 (bg)
+   Paleta OdontoGest: #F2FBF8 / #CFF3EA / #7ED9C3 / #2B7A78 / #17252A
    Modo oscuro: [data-theme="dark"]
    ============================================================ */
 :root {
     /* ── Sidebar ── */
-    --sidebar-bg:              #0C1F46;
-    --sidebar-bg-hover:        #1A3E7E;
-    --sidebar-active-bg:       #1A3E7E;
+    --sidebar-bg:              #17252A;
+    --sidebar-bg-hover:        #235F5E;
+    --sidebar-active-bg:       #2B7A78;
     --sidebar-text:            rgba(255,255,255,0.72);
     --sidebar-text-active:     #FFFFFF;
-    --sidebar-accent:          #B2DAFF;
+    --sidebar-accent:          #7ED9C3;
     --sidebar-border:          rgba(255,255,255,0.08);
-    --sidebar-header-bg:       #112C5C;
+    --sidebar-header-bg:       #17252A;
     --sidebar-width:           220px;
     --sidebar-width-collapsed: 62px;
     --sidebar-z-index:         1000;
@@ -20,54 +20,54 @@
 
     /* ── Header ── */
     --header-bg:               #FFFFFF;
-    --header-text:             #1A2940;
-    --header-text-muted:       #6B7280;
-    --header-border:           #DDE4EF;
+    --header-text:             #17252A;
+    --header-text-muted:       #52706F;
+    --header-border:           #B9E5D9;
     --header-height:           60px;
     --header-shadow:           0 1px 4px rgba(0,0,0,0.07);
     --header-z-index:          999;
 
     /* ── Body ── */
-    --body-bg:                 #F0F3F8;
-    --body-text:               #1A2940;
-    --body-text-muted:         #6B7280;
+    --body-bg:                 #F2FBF8;
+    --body-text:               #17252A;
+    --body-text-muted:         #52706F;
 
     /* ── Cards ── */
     --card-bg:                 #FFFFFF;
-    --card-border:             #DDE4EF;
+    --card-border:             #CFF3EA;
     --card-border-radius:      12px;
-    --card-shadow:             0 2px 8px rgba(26,41,64,0.06);
-    --card-shadow-hover:       0 6px 20px rgba(26,86,171,0.12);
+    --card-shadow:             0 2px 8px rgba(23,37,42,0.06);
+    --card-shadow-hover:       0 6px 20px rgba(43,122,120,0.16);
 
     /* ── Tablas ── */
     --table-bg:                #FFFFFF;
-    --table-text:              #1A2940;
-    --table-border:            #DDE4EF;
-    --table-thead-bg:          #F5F7FB;
-    --table-thead-text:        #6B7280;
-    --table-row-hover-bg:      #F0F3F8;
+    --table-text:              #17252A;
+    --table-border:            #CFF3EA;
+    --table-thead-bg:          #E8F8F3;
+    --table-thead-text:        #52706F;
+    --table-row-hover-bg:      #F2FBF8;
 
     /* ── Formularios ── */
-    --input-bg:                #F5F7FB;
-    --input-border:            #DDE4EF;
-    --input-border-focus:      #1A56AB;
-    --input-shadow-focus:      rgba(26,86,171,0.18);
+    --input-bg:                #F2FBF8;
+    --input-border:            #B9E5D9;
+    --input-border-focus:      #2B7A78;
+    --input-shadow-focus:      rgba(43,122,120,0.18);
     --input-border-radius:     8px;
-    --input-group-bg:          #EEF3FC;
-    --input-group-text:        #1A56AB;
+    --input-group-bg:          #CFF3EA;
+    --input-group-text:        #2B7A78;
 
     /* ── Botones ── */
-    --btn-primary-bg:          #1A56AB;
-    --btn-primary-bg-hover:    #154a96;
+    --btn-primary-bg:          #2B7A78;
+    --btn-primary-bg-hover:    #235F5E;
     --btn-primary-text:        #FFFFFF;
-    --btn-primary-shadow:      rgba(26,86,171,0.30);
+    --btn-primary-shadow:      rgba(43,122,120,0.30);
     --btn-border-radius:       8px;
 
     /* ── Estados ── */
-    --color-success:           #16a34a;
+    --color-success:           #278A71;
     --color-warning:           #d97706;
     --color-danger:            #dc2626;
-    --color-info:              #1A56AB;
+    --color-info:              #2B7A78;
 
     /* ── Layout ── */
     --main-content-pt:         68px;
@@ -83,6 +83,12 @@ body {
     margin: 0;
     font-size: 14px;
 }
+
+/* Compatibilidad visual con vistas que todavía contienen colores inline. */
+*[style*="color:#1A56AB"], *[style*="color: #1A56AB"] { color: #2B7A78 !important; }
+*[style*="background:#1A56AB"], *[style*="background: #1A56AB"],
+*[style*="background-color:#1A56AB"], *[style*="background-color: #1A56AB"] { background-color: #2B7A78 !important; }
+*[style*="border-color:#1A56AB"], *[style*="border-color: #1A56AB"] { border-color: #2B7A78 !important; }
 
 /* ── Layout principal ───────────────────────────────────────── */
 .top-header {
@@ -146,7 +152,7 @@ body {
 }
 .sidebar-logo-icon {
     width: 34px; height: 34px;
-    background: #1A56AB;
+    background: #2B7A78;
     border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -434,8 +440,8 @@ body {
     flex-shrink: 0;
 }
 .btn-og-icon:hover {
-    background: #1A56AB; border-color: #1A56AB; color: #fff;
-    box-shadow: 0 2px 8px rgba(26,86,171,.25);
+    background: #2B7A78; border-color: #2B7A78; color: #fff;
+    box-shadow: 0 2px 8px rgba(43,122,120,.25);
 }
 .btn-og-icon.btn-danger-icon:hover {
     background: #DC2626; border-color: #DC2626; color: #fff;
@@ -449,7 +455,7 @@ body {
     background: #253349; border-color: #334155; color: #CBD5E1;
 }
 [data-theme="dark"] .btn-og-icon:hover {
-    background: #1A56AB; border-color: #1A56AB; color: #fff;
+    background: #2B7A78; border-color: #2B7A78; color: #fff;
 }
 
 /* ── Botón OG outline (exportar, secundario con color) ─────── */
@@ -485,8 +491,8 @@ body {
     cursor: pointer; transition: all .15s; text-decoration: none;
     display: inline-block; white-space: nowrap;
 }
-.filter-tab:hover { border-color: #1A56AB; color: #1A56AB; }
-.filter-tab.active { background: #1A56AB; border-color: #1A56AB; color: #fff; font-weight: 600; }
+.filter-tab:hover { border-color: #2B7A78; color: #2B7A78; }
+.filter-tab.active { background: #2B7A78; border-color: #2B7A78; color: #fff; font-weight: 600; }
 
 /* ── Notificaciones dropdown ─────────────────────────────────── */
 .notif-item:hover { background: #F5F7FB !important; }

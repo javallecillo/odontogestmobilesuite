@@ -23,39 +23,39 @@ class AppColors {
   AppColors._();
 
   // ── Marca principal ────────────────────────────────────────────────────────
-  /// Azul principal de la clínica — botones, AppBar, íconos activos
-  static const Color primary     = Color(0xFF1A56AB);
+  /// Verde petróleo de la clínica — botones, AppBar, íconos activos
+  static const Color primary     = Color(0xFF2B7A78);
 
-  /// Azul oscuro — gradientes, hover states
-  static const Color primaryDark = Color(0xFF1847A0);
+  /// Verde muy oscuro — gradientes, hover states
+  static const Color primaryDark = Color(0xFF17252A);
 
-  /// Azul muy claro — fondos de chips, avatares, indicadores
-  static const Color primaryLight = Color(0xFFE0ECFF);
+  /// Menta clara — fondos de chips, avatares, indicadores
+  static const Color primaryLight = Color(0xFFCFF3EA);
 
   // ── Fondos ─────────────────────────────────────────────────────────────────
   /// Fondo general de pantallas
-  static const Color background  = Color(0xFFECF1F8);
+  static const Color background  = Color(0xFFF2FBF8);
 
   /// Fondo de tarjetas y superficies elevadas
   static const Color surface     = Colors.white;
 
   /// Fondo de campos de entrada
-  static const Color inputFill   = Color(0xFFEEF3FC);
+  static const Color inputFill   = Color(0xFFE8F8F3);
 
   // ── Texto ──────────────────────────────────────────────────────────────────
   /// Texto principal — títulos, valores importantes
-  static const Color textDark    = Color(0xFF1A2940);
+  static const Color textDark    = Color(0xFF17252A);
 
   /// Texto secundario — subtítulos, metadatos, placeholders
-  static const Color textMuted   = Color(0xFF6B7280);
+  static const Color textMuted   = Color(0xFF52706F);
 
   /// Texto sobre fondo oscuro (AppBar, botones llenos)
   static const Color textOnPrimary = Colors.white;
 
   // ── Estados semánticos ─────────────────────────────────────────────────────
   /// Éxito — cita atendida, factura pagada, stock OK
-  static const Color success     = Color(0xFF16A34A);
-  static const Color successLight = Color(0xFFE0F5E9);
+  static const Color success     = Color(0xFF278A71);
+  static const Color successLight = Color(0xFFCFF3EA);
 
   /// Advertencia — pendiente, stock bajo
   static const Color warning     = Color(0xFFF59E0B);
@@ -66,12 +66,12 @@ class AppColors {
   static const Color errorLight  = Color(0xFFFFE4E4);
 
   /// Información — notificaciones neutras
-  static const Color info        = Color(0xFF2563EB);
-  static const Color infoLight   = Color(0xFFDBEAFE);
+  static const Color info        = Color(0xFF2B7A78);
+  static const Color infoLight   = Color(0xFFCFF3EA);
 
   // ── Bordes y divisores ─────────────────────────────────────────────────────
-  static const Color border      = Color(0xFFDDE4EF);
-  static const Color divider     = Color(0xFFEEF2F8);
+  static const Color border      = Color(0xFFB9E5D9);
+  static const Color divider     = Color(0xFFE0F4EE);
 
   // ── Sombras ────────────────────────────────────────────────────────────────
   static const Color shadow      = Color(0x12000000); // 7% opacidad

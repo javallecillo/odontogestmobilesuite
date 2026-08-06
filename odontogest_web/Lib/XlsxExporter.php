@@ -5,7 +5,7 @@
  *
  * Estilos incluidos:
  *  0 — celda normal con borde fino
- *  1 — encabezado: negrita, fondo azul (#1A56AB), texto blanco, centrado
+ *  1 — encabezado: negrita, fondo verde petróleo (#2B7A78), texto blanco, centrado
  *  2 — totales:    negrita, fondo gris claro (#E8EDF5)
  *  3 — (reservado para uso futuro)
  *  4 — título del reporte: negrita grande, texto azul
@@ -39,6 +39,15 @@ class XlsxExporter {
         self::$strings   = [];
         self::$stringIdx = 0;
 
+        // Algunos servidores PHP no incluyen la extensión ZipArchive. En ese
+        // caso se entrega un libro Excel 2003 XML (.xls), que Excel abre de
+        // forma nativa y evita que la exportación falle por el entorno.
+        if (!class_exists('ZipArchive')) {
+            self::descargarExcelXml(
+                $titulo, $subtitulo, $encabezados, $filas, $totales, $nombre
+            );
+        }
+
         // La hoja debe construirse ANTES de sharedStrings para poblar la tabla
         $sheetXml = self::buildSheet($titulo, $subtitulo, $encabezados, $filas, $totales);
 
@@ -69,6 +78,66 @@ class XlsxExporter {
         readfile($tmpFile);
         unlink($tmpFile);
         exit;
+    }
+
+    /** Genera un libro Excel compatible sin requerir extensiones de PHP. */
+    private static function descargarExcelXml(
+        string $titulo,
+        string $subtitulo,
+        array $encabezados,
+        array $filas,
+        array $totales,
+        string $nombre
+    ): void {
+        $safeName = preg_replace('/[^\w\-. áéíóúñÁÉÍÓÚÑ]/u', '_', $nombre);
+        $columnas = max(1, count($encabezados));
+
+        header('Content-Type: application/vnd.ms-excel; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="' . rawurlencode($safeName) . '.xls"');
+        header('Cache-Control: max-age=0, must-revalidate, no-cache, no-store');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+        echo '<?mso-application progid="Excel.Sheet"?>';
+        echo '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" '
+            . 'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+        echo '<Styles>'
+            . '<Style ss:ID="Title"><Font ss:Bold="1" ss:Size="14" ss:Color="#2B7A78"/></Style>'
+            . '<Style ss:ID="Subtitle"><Font ss:Italic="1" ss:Color="#52616B"/></Style>'
+            . '<Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#2B7A78" ss:Pattern="Solid"/></Style>'
+            . '<Style ss:ID="Total"><Font ss:Bold="1"/><Interior ss:Color="#CFF3EA" ss:Pattern="Solid"/></Style>'
+            . '</Styles><Worksheet ss:Name="Reporte"><Table>';
+
+        self::xmlRow([$titulo], 'Title', $columnas);
+        self::xmlRow([$subtitulo], 'Subtitle', $columnas);
+        self::xmlRow([], null, $columnas);
+        self::xmlRow($encabezados, 'Header');
+        foreach ($filas as $fila) self::xmlRow(array_values($fila));
+        if ($totales) self::xmlRow($totales, 'Total');
+
+        echo '</Table></Worksheet></Workbook>';
+        exit;
+    }
+
+    private static function xmlRow(array $values, ?string $style = null, int $merge = 0): void {
+        echo '<Row>';
+        if ($merge > 1) {
+            self::xmlCell($values[0] ?? '', $style, $merge - 1);
+        } elseif (!$values) {
+            echo '<Cell/>';
+        } else {
+            foreach ($values as $value) self::xmlCell($value, $style);
+        }
+        echo '</Row>';
+    }
+
+    private static function xmlCell($value, ?string $style = null, int $mergeAcross = 0): void {
+        $attrs = $style ? ' ss:StyleID="' . $style . '"' : '';
+        if ($mergeAcross > 0) $attrs .= ' ss:MergeAcross="' . $mergeAcross . '"';
+        $type = is_numeric($value) ? 'Number' : 'String';
+        $text = htmlspecialchars((string)$value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+        echo '<Cell' . $attrs . '><Data ss:Type="' . $type . '">' . $text . '</Data></Cell>';
     }
 
     // ── String table ─────────────────────────────────────────────
@@ -245,7 +314,7 @@ class XlsxExporter {
             // 2: totales — negrita, azul oscuro
             . '<font><b/><sz val="11"/><name val="Calibri"/><family val="2"/><color rgb="FF0C1F46"/></font>'
             // 3: título — negrita grande, azul
-            . '<font><b/><sz val="14"/><name val="Calibri"/><family val="2"/><color rgb="FF1A56AB"/></font>'
+            . '<font><b/><sz val="14"/><name val="Calibri"/><family val="2"/><color rgb="FF2B7A78"/></font>'
             // 4: subtítulo — itálica, gris
             . '<font><i/><sz val="10"/><name val="Calibri"/><family val="2"/><color rgb="FF6B7280"/></font>'
             . '</fonts>'
@@ -254,7 +323,7 @@ class XlsxExporter {
             . '<fill><patternFill patternType="none"/></fill>'
             . '<fill><patternFill patternType="gray125"/></fill>'
             // 2: azul principal (encabezado)
-            . '<fill><patternFill patternType="solid"><fgColor rgb="FF1A56AB"/><bgColor indexed="64"/></patternFill></fill>'
+            . '<fill><patternFill patternType="solid"><fgColor rgb="FF2B7A78"/><bgColor indexed="64"/></patternFill></fill>'
             // 3: gris muy claro (totales)
             . '<fill><patternFill patternType="solid"><fgColor rgb="FFE8EDF5"/><bgColor indexed="64"/></patternFill></fill>'
             // 4: blanco (sin relleno explícito)
@@ -266,10 +335,10 @@ class XlsxExporter {
             . '<border><left/><right/><top/><bottom/><diagonal/></border>'
             // 1: borde fino gris
             . '<border>'
-            . '<left style="thin"><color rgb="FFDDE4EF"/></left>'
-            . '<right style="thin"><color rgb="FFDDE4EF"/></right>'
-            . '<top style="thin"><color rgb="FFDDE4EF"/></top>'
-            . '<bottom style="thin"><color rgb="FFDDE4EF"/></bottom>'
+            . '<left style="thin"><color rgb="FFB9E5D9"/></left>'
+            . '<right style="thin"><color rgb="FFB9E5D9"/></right>'
+            . '<top style="thin"><color rgb="FFB9E5D9"/></top>'
+            . '<bottom style="thin"><color rgb="FFB9E5D9"/></bottom>'
             . '<diagonal/>'
             . '</border>'
             . '</borders>'

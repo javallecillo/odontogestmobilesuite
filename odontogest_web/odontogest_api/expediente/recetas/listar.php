@@ -24,7 +24,7 @@ try {
             r.duracion,
             r.notas,
             r.fecha_emision,
-            CONCAT(u.nombre, ' ', u.apellido) AS odontologo
+            u.nombre_completo AS odontologo
         FROM recetas r
         JOIN odontologos od ON od.id_odontologo = r.id_odontologo
         JOIN usuarios u     ON u.id_usuario     = od.id_usuario

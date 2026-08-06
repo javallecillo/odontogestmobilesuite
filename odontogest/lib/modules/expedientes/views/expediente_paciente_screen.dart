@@ -73,7 +73,10 @@ class _ExpedientePacienteScreenState extends State<ExpedientePacienteScreen>
 
   Future<void> _cargarRecetas() async {
     final eid = _resumen?.idExpediente;
-    if (eid == null) return;
+    if (eid == null) {
+      setState(() => _loadingRecetas = false);
+      return;
+    }
     setState(() => _loadingRecetas = true);
     final r = await ExpedienteService.fetchRecetas(eid);
     if (!mounted) return;
@@ -89,7 +92,10 @@ class _ExpedientePacienteScreenState extends State<ExpedientePacienteScreen>
 
   Future<void> _cargarFotos() async {
     final eid = _resumen?.idExpediente;
-    if (eid == null) return;
+    if (eid == null) {
+      setState(() => _loadingFotos = false);
+      return;
+    }
     setState(() => _loadingFotos = true);
     final r = await ExpedienteService.fetchFotos(eid);
     if (!mounted) return;
