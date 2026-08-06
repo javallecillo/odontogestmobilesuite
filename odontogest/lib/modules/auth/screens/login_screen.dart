@@ -2,6 +2,7 @@
 // Extraída de main.dart para permitir navegación desde otras pantallas.
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_theme.dart';
+import '../../../core/constants/app_assets.dart';
 import '../../../core/session/app_session.dart';
 import '../../../data/services/auth_service.dart';
 import '../../seguridad/views/home_shell.dart';
@@ -140,24 +141,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: SafeArea(
                   child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.local_hospital,
-                            color: Colors.white, size: 72),
-                        const SizedBox(height: 12),
-                        Text('OdontoGest',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2,
-                            )),
-                        const SizedBox(height: 4),
-                        Text('Sistema de Gestión Clínica',
-                            style: TextStyle(
-                                color: Colors.white70, fontSize: 13)),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Image.asset(
+                        AppAssets.logo,
+                        width: 148,
+                        height: 148,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                      ),
                     ),
                   ),
                 ),
