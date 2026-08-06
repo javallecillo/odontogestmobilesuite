@@ -27,8 +27,10 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/', $fecha)) {
     error(400, 'Formato fecha_cita inválido — usa YYYY-MM-DD HH:MM');
 }
 
+$paso = 'conectar a base de datos';
 try {
     $db = getDB();
+    $paso = 'validar disponibilidad';
 
     // Verificar colisión de horario (mismo odontologo, misma hora, no cancelada)
     $chk = $db->prepare("
@@ -43,6 +45,7 @@ try {
     }
 
     // Buscar o crear horario
+    $paso = 'buscar horario';
     $hora      = substr($fecha, 11, 5);
     $fechaSola = substr($fecha,  0, 10);
     $mapDia    = [
@@ -58,12 +61,14 @@ try {
     $idHorario = $hRow->fetchColumn();
 
     if (!$idHorario) {
+        $paso = 'crear horario';
         $db->prepare('INSERT INTO horarios (dia, hora, duracion_min, fecha, disponible) VALUES (?, ?, 30, ?, 1)')
             ->execute([$dia, $hora . ':00', $fechaSola]);
         $idHorario = (int)$db->lastInsertId();
     }
 
     // Insertar cita
+    $paso = 'guardar cita';
     $ins = $db->prepare("
         INSERT INTO citas
             (id_paciente, id_odontologo, id_horario, id_servicio, fecha_cita, notas, estado, asistencia)
@@ -85,5 +90,10 @@ try {
     ]);
 
 } catch (PDOException $e) {
-    error(500, $e->getMessage());
+    error_log(sprintf(
+        'agenda/crear.php [%s] %s',
+        $paso ?? 'conectar a base de datos',
+        $e->getMessage()
+    ));
+    error(500, "No fue posible registrar la cita durante: {$paso}");
 }
