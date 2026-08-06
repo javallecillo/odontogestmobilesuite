@@ -130,11 +130,11 @@ foreach (array_slice(explode(' ', $nombreUsuario), 0, 2) as $parte) {
         <div class="header-sub">Clínica Dental Ortonova — Honduras</div>
     </div>
 
-    <!-- Buscador centrado -->
+    <!-- Buscador centrado 
     <div class="header-search">
         <i class="fas fa-search search-icon"></i>
         <input type="text" placeholder="Buscar pacientes, citas...">
-    </div>
+    </div>-->
 
     <!-- Controles derecha -->
     <div class="d-flex align-items-center gap-2 ms-auto">

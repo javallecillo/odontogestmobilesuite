@@ -10,7 +10,9 @@ $exportBase = APP_URL . "reportes/exportar?tipo=citas&fecha_ini={$fecha_ini}&fec
         <div style="flex:1;min-width:140px;"><label class="form-label">Hasta</label><input type="date" name="fecha_fin" class="form-control" value="<?= $ff ?>"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;" class="export-btns">
             <button type="submit" class="btn-og-primary"><i class="fas fa-chart-bar me-1"></i>Generar</button>
-            
+            <a href="<?= $exportBase ?>&formato=excel" class="btn-og-success" title="Descargar Excel profesional">
+                <i class="fas fa-file-excel me-1"></i>Excel
+            </a>
             <a href="<?= $exportBase ?>&formato=pdf" target="_blank" class="btn-og-secondary" title="Descargar PDF profesional">
                 <i class="fas fa-file-pdf me-1"></i>PDF
             </a>

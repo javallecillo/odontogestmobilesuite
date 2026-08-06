@@ -163,7 +163,7 @@ foreach($kpiItems as $k): ?>
 .badge-en_curso   {background:#DBEAFE;color:#1E40AF;}
 .badge-atendida   {background:#D1FAE5;color:#065F46;}
 .badge-cancelada  {background:#FEE2E2;color:#991B1B;}
-.badge-no_asistio {background:#F3F4F6;color:#6B7280;}
+.badge-no_asistio {background:#F3F4F6;color:#ff2424;}
 </style>
 
 <script>

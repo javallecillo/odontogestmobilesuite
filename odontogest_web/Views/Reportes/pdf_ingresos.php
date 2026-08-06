@@ -92,7 +92,7 @@ tfoot td:not(:first-child){text-align:right;}
             <div class="doc-logo">O</div>
             <div class="doc-brand">
                 <div class="name">OdontoGest</div>
-                <div class="sub">Sistema de Gestión Odontológica<br>Clínica Dental Paz &mdash; Honduras</div>
+                <div class="sub">Sistema de Gestión Odontológica<br>Clínica Dental Ortonova &mdash; Honduras</div>
             </div>
         </div>
         <div class="doc-meta">
@@ -104,7 +104,7 @@ tfoot td:not(:first-child){text-align:right;}
     </div>
 
     <div class="report-title">
-        <span class="icon">&#x1F4C8;</span>
+        
         <div>
             <h1>Reporte de Ingresos por Período</h1>
             <div class="period">Moneda: Lempiras (L.) &mdash; ISV incluido &mdash; Período: <?= $fi ?> al <?= $ff ?></div>
@@ -160,7 +160,7 @@ tfoot td:not(:first-child){text-align:right;}
     <div class="doc-footer">
         <div>
             <div>Documento generado por OdontoGest v<?= APP_VERSION ?>. Información confidencial y de uso interno.</div>
-            <div>&copy; <?= date('Y') ?> Clínica Dental Paz — Todos los derechos reservados.</div>
+            <div>&copy; <?= date('Y') ?> Clínica Dental Ortonova — Todos los derechos reservados.</div>
         </div>
         <div style="text-align:center;">
             <div class="signature-line">Responsable Financiero</div>

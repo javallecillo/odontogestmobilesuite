@@ -248,8 +248,8 @@ $estadoBadge = [
                 <div class="row g-2">
                     <?php $accesos = [
                         ['url'=>'Agenda/index',    'ico'=>'fas fa-calendar-plus',   'lbl'=>'Nueva Cita',     'color'=>'#1A56AB'],
-                        ['url'=>'Pacientes/nuevo', 'ico'=>'fas fa-user-plus',        'lbl'=>'Nuevo Paciente', 'color'=>'#16a34a'],
-                        ['url'=>'Facturacion/nuevo','ico'=>'fas fa-file-invoice',     'lbl'=>'Nueva Factura',  'color'=>'#d97706'],
+                        ['url'=>'Pacientes/index', 'ico'=>'fas fa-user-plus',        'lbl'=>'Nuevo Paciente', 'color'=>'#16a34a'],
+                        ['url'=>'Facturacion/index','ico'=>'fas fa-file-invoice',     'lbl'=>'Nueva Factura',  'color'=>'#d97706'],
                         ['url'=>'Inventario/index', 'ico'=>'fas fa-boxes-stacked',   'lbl'=>'Inventario',     'color'=>'#9333ea'],
                         ['url'=>'Pacientes/index',  'ico'=>'fas fa-users',            'lbl'=>'Pacientes',      'color'=>'#0891b2'],
                         ['url'=>'Reportes/index',   'ico'=>'fas fa-chart-bar',        'lbl'=>'Reportes',       'color'=>'#d97706'],
